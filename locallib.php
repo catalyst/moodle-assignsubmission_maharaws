@@ -912,7 +912,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $url = new moodle_url('/mod/assign/submission/maharaws/launch.php', array('url' => $url, 'id' => $cm->id, 'sesskey' => sesskey()));
 
         $popupicon = html_writer::link($url->out(false), $icon, $params + array(
-          'class' => 'portfolio popup',
+          'class' => 'portfolio',
         ));
 
         $link = html_writer::link($url, $name, $params);

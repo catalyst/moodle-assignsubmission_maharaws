@@ -24,7 +24,7 @@ Install the Moodle plugin (and Mahara patches)
 
 1. Make sure that your Moodle and Mahara versions are up to date.
 
-2. If you are using Mahara 20.04 or earlier, apply the patches listed below.
+2. If you are using Mahara 20.04 or earlier, apply the patches from the [issue report](https://bugs.launchpad.net/mahara/+bug/1882461).
 
 3. Copy the contents of this project to mod/assign/submission/maharaws in your Moodle site.
 

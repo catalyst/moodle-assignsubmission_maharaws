@@ -229,7 +229,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         );
 
         $client = new mahara_oauth($args);
-        if ($CFG->disablesslchecks) {
+        if (!empty($CFG->disablesslchecks)) {
             $options = array('CURLOPT_SSL_VERIFYPEER' => 0, 'CURLOPT_SSL_VERIFYHOST' => 0);
             $client->setup_oauth_http_options($options);
         }

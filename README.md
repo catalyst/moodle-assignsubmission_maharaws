@@ -62,7 +62,19 @@ Configure Mahara
 
       3.2 Enable 'Auto-create accounts' and click the 'Save' button.
 
+Configure Moodle
+----------------
 
+1. Go to Site Administration / Plugins / Activity Modules / Assignment / Submission Plugins / mahara Submissions
+
+2. Set defaults for whether the option to submit from mahara should always be enabled, and the default state of 'Lock submitted pages'
+
+3. If you are only going to use one target instance of Mahara, and you wish to set Mahara connection details only once, fill in the rest of the form, these values will default each time:
+    - URL of your Mahara site.
+    - Mahara web services OAuth key (from the external apps list in Mahara).
+    - Mahara web services Oauth secret
+4. If you select 'Force global credentials' then these credentials will always be used and course creators will not be able to override them on individual assignments.
+  
 Create a new Mahara assignment in Moodle
 ------------------------------------------
 **Note**: Users must have _assignsubmission/maharaws:configure_ capability to be able to configure URL, OAuth key and secret.
@@ -71,7 +83,7 @@ Create a new Mahara assignment in Moodle
 
 2. Select Mahara as the assignment submission type.
 
-3. Fill in the following:
+3. if you have not chosen to use global connection details, fill in the following:
       - URL of your Mahara site.
       - Mahara web services OAuth key (from the external apps list in Mahara).
       - Mahara web services Oauth secret.

@@ -113,34 +113,53 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         require_once($CFG->dirroot . '/mod/assign/submission/maharaws/lib.php');
 
+        $forceGlobalCredentials = get_config('assignsubmission_maharaws','force_global_credentials');
+
+        if ($forceGlobalCredentials){
+            $mform->addElement('static', 'assignsubmission_maharaws_label', get_string('gclabel', 'assignsubmission_maharaws'), get_string('gcdesc', 'assignsubmission_maharaws'));
+        }
+
         $mform->addElement('text', 'assignsubmission_maharaws_url', get_string('url', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
         $mform->setType('assignsubmission_maharaws_url', PARAM_URL);
-        if (!empty($this->get_config('url'))) {
+        if (!empty(get_config('assignsubmission_maharaws','url'))) {
+            $mform->setDefault('assignsubmission_maharaws_url', get_config('assignsubmission_maharaws','url'));
+        } else if (!empty($this->get_config('assignsubmission_maharaws','url'))) {
             $mform->setDefault('assignsubmission_maharaws_url', $this->get_config('url'));
         }
+
         $mform->addHelpButton('assignsubmission_maharaws_url', 'url', 'assignsubmission_maharaws');
         $mform->hideIf('assignsubmission_maharaws_url', 'assignsubmission_maharaws_enabled', 'notchecked');
 
-        if (!$this->can_configure()) {
+        if ($forceGlobalCredentials || !$this->can_configure()) {
             $mform->freeze(['assignsubmission_maharaws_url']);
         }
 
         if ($this->can_configure()) {
             $mform->addElement('text', 'assignsubmission_maharaws_key', get_string('key', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
             $mform->setType('assignsubmission_maharaws_key', PARAM_ALPHANUM);
-            if (!empty($this->get_config('key'))) {
+            if (!empty(get_config('assignsubmission_maharaws','key'))) {
+                $mform->setDefault('assignsubmission_maharaws_key', get_config('assignsubmission_maharaws','key'));
+            } else if (!empty($this->get_config('key'))) {
                 $mform->setDefault('assignsubmission_maharaws_key', $this->get_config('key'));
             }
             $mform->addHelpButton('assignsubmission_maharaws_key', 'key', 'assignsubmission_maharaws');
             $mform->hideIf('assignsubmission_maharaws_key', 'assignsubmission_maharaws_enabled', 'notchecked');
+            if ($forceGlobalCredentials){
+                $mform->freeze(['assignsubmission_maharaws_key']);
+            }
 
             $mform->addElement('password', 'assignsubmission_maharaws_secret', get_string('secret', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
             $mform->setType('assignsubmission_maharaws_secret', PARAM_ALPHANUM);
-            if (!empty($this->get_config('secret'))) {
+            if (!empty(get_config('assignsubmission_maharaws','secret'))) {
+                $mform->setDefault('assignsubmission_maharaws_secret', get_config('assignsubmission_maharaws','secret'));
+            } else if (!empty($this->get_config('secret'))) {
                 $mform->setDefault('assignsubmission_maharaws_secret', $this->get_config('secret'));
             }
             $mform->addHelpButton('assignsubmission_maharaws_secret', 'secret', 'assignsubmission_maharaws');
             $mform->hideIf('assignsubmission_maharaws_secret', 'assignsubmission_maharaws_enabled', 'notchecked');
+            if ($forceGlobalCredentials){
+                $mform->freeze(['assignsubmission_maharaws_secret']);
+            }
         }
 
         $locked = $this->get_config('lock');

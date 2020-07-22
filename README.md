@@ -65,6 +65,7 @@ Configure Mahara
 
 Create a new Mahara assignment in Moodle
 ------------------------------------------
+**Note**: Users must have _assignsubmission/maharaws:configure_ capability to be able to configure URL, OAuth key and secret.
 
 1. Add an assignment in Moodle.
 

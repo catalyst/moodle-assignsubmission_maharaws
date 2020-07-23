@@ -118,21 +118,30 @@ class assign_submission_maharaws extends assign_submission_plugin {
         if (!empty($this->get_config('url'))) {
             $mform->setDefault('assignsubmission_maharaws_url', $this->get_config('url'));
         }
+        $mform->addHelpButton('assignsubmission_maharaws_url', 'url', 'assignsubmission_maharaws');
         $mform->hideIf('assignsubmission_maharaws_url', 'assignsubmission_maharaws_enabled', 'notchecked');
 
-        $mform->addElement('text', 'assignsubmission_maharaws_key', get_string('key', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
-        $mform->setType('assignsubmission_maharaws_key', PARAM_ALPHANUM);
-        if (!empty($this->get_config('key'))) {
-            $mform->setDefault('assignsubmission_maharaws_key', $this->get_config('key'));
+        if (!$this->can_configure()) {
+            $mform->freeze(['assignsubmission_maharaws_url']);
         }
-        $mform->hideIf('assignsubmission_maharaws_key', 'assignsubmission_maharaws_enabled', 'notchecked');
 
-        $mform->addElement('password', 'assignsubmission_maharaws_secret', get_string('secret', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
-        $mform->setType('assignsubmission_maharaws_secret', PARAM_ALPHANUM);
-        if (!empty($this->get_config('secret'))) {
-            $mform->setDefault('assignsubmission_maharaws_secret', $this->get_config('secret'));
+        if ($this->can_configure()) {
+            $mform->addElement('text', 'assignsubmission_maharaws_key', get_string('key', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
+            $mform->setType('assignsubmission_maharaws_key', PARAM_ALPHANUM);
+            if (!empty($this->get_config('key'))) {
+                $mform->setDefault('assignsubmission_maharaws_key', $this->get_config('key'));
+            }
+            $mform->addHelpButton('assignsubmission_maharaws_key', 'key', 'assignsubmission_maharaws');
+            $mform->hideIf('assignsubmission_maharaws_key', 'assignsubmission_maharaws_enabled', 'notchecked');
+
+            $mform->addElement('password', 'assignsubmission_maharaws_secret', get_string('secret', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
+            $mform->setType('assignsubmission_maharaws_secret', PARAM_ALPHANUM);
+            if (!empty($this->get_config('secret'))) {
+                $mform->setDefault('assignsubmission_maharaws_secret', $this->get_config('secret'));
+            }
+            $mform->addHelpButton('assignsubmission_maharaws_secret', 'secret', 'assignsubmission_maharaws');
+            $mform->hideIf('assignsubmission_maharaws_secret', 'assignsubmission_maharaws_enabled', 'notchecked');
         }
-        $mform->hideIf('assignsubmission_maharaws_secret', 'assignsubmission_maharaws_enabled', 'notchecked');
 
         $locked = $this->get_config('lock');
         if ($locked === false) {
@@ -151,9 +160,9 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $mform->addHelpButton('assignsubmission_maharaws_lockpages', 'lockpages', 'assignsubmission_maharaws');
         $mform->hideIf('assignsubmission_maharaws_lockpages', 'assignsubmission_maharaws_enabled', 'notchecked');
 
-        $mform->addHelpButton('assignsubmission_maharaws_url', 'url', 'assignsubmission_maharaws');
-        $mform->addHelpButton('assignsubmission_maharaws_key', 'key', 'assignsubmission_maharaws');
-        $mform->addHelpButton('assignsubmission_maharaws_secret', 'secret', 'assignsubmission_maharaws');
+        if (!$this->can_configure()) {
+            $mform->freeze(['assignsubmission_maharaws_lockpages']);
+        }
     }
 
     /**
@@ -166,13 +175,15 @@ class assign_submission_maharaws extends assign_submission_plugin {
         global $CFG;
         require_once($CFG->dirroot . '/mod/assign/submission/maharaws/lib.php');
 
-        $this->set_config('url', $data->assignsubmission_maharaws_url);
-        $this->set_config('key', $data->assignsubmission_maharaws_key);
-        $this->set_config('secret', $data->assignsubmission_maharaws_secret);
-        $this->set_config('debug', false);
-        $this->set_config('remoteuser', false);
-        $this->set_config('lock', $data->assignsubmission_maharaws_lockpages);
-        $this->set_config('username_attribute', 'email');
+        if ($this->can_configure()) {
+            $this->set_config('url', $data->assignsubmission_maharaws_url);
+            $this->set_config('key', $data->assignsubmission_maharaws_key);
+            $this->set_config('secret', $data->assignsubmission_maharaws_secret);
+            $this->set_config('debug', false);
+            $this->set_config('remoteuser', false);
+            $this->set_config('lock', $data->assignsubmission_maharaws_lockpages);
+            $this->set_config('username_attribute', 'email');
+        }
 
         // Test Mahara connection.
         try {
@@ -206,7 +217,22 @@ class assign_submission_maharaws extends assign_submission_plugin {
         return true;
     }
 
+    /**
+     * Check if the current user can configure the plugin in the provided context.
+     *
+     * @param \context|null $context Context to check permissions in. If not set, then current page context will be used.
+     *
+     * @return bool
+     */
+    public function can_configure(context $context = null) {
+        global $PAGE;
 
+        if (empty($context)) {
+            $context = $PAGE->context;
+        }
+
+        return has_capability('assignsubmission/maharaws:configure', $context);
+    }
 
     /**
      * Add elements to user submission form

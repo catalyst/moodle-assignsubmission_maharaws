@@ -49,6 +49,7 @@ $string['key'] = 'Mahara Web Services OAuth key';
 $string['lockpages_help'] = 'If "Yes, keep locked" is selected, submitted Mahara pages and collections will be locked from editing in Mahara and will remain locked after grading. If "Yes, but unlock after grading", the page or collection will be unlocked after submission grading, or, if marking workflow has been used, they will be unlocked when marks are released to student.';
 $string['lockpages'] = 'Lock submitted pages';
 $string['mahara'] = 'Mahara';
+$string['maharaws:configure'] = 'Configure mahara submission';
 $string['nomaharahostsfound'] = 'No mahara hosts found.';
 $string['noneselected'] = 'None selected';
 $string['noviewscreated'] = 'You have no available Mahara pages or collections. Please <a href="{$a->jumpurl}" target="_blank" rel="noopener noreferrer">click here</a> to visit "{$a->name}" and create a new one.';

@@ -23,4 +23,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$capabilities = array();
+$capabilities = array(
+    'assignsubmission/maharaws:configure' => array(
+        'riskbitmask' => RISK_MANAGETRUST,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        )
+    ),
+);

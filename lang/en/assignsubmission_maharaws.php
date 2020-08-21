@@ -73,7 +73,6 @@ $string['remoteuser'] = 'Use remoteuser';
 $string['secret_help'] = 'Enter the Web Services OAuth secret from the partner Mahara site.';
 $string['secret'] = 'Mahara Web Services OAuth secret';
 $string['selectmaharaview'] = 'Select one of your available portfolio pages or collections from the list below, or <a href="{$a->jumpurl}" target="_blank" rel="noopener noreferrer">click here</a> to visit "{$a->name}" and create a new one.';
-$string['sharewith'] = 'Ensure that your {$a->site} pages are shared for grading with: {$a->names}';
 $string['token_help'] = 'Enter the Web Services authentication token from the partner Mahara site.';
 $string['token'] = 'Mahara Web Services token';
 $string['url_help'] = 'This setting lets you define which Mahara site your students should submit their pages from.  Enter the fully qualified URL to the Mahara site home page eg: https://mahara.some.edu/mahara/';

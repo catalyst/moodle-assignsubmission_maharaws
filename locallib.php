@@ -379,16 +379,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
             $mform->addElement('html', '<hr/><br/>');
 
             if (count($views['data'])) {
-                $users = get_users_by_capability($PAGE->context, 'mod/assign:grade');
-                $names = array();
-                foreach ($users as $u) {
-                    $names[] = fullname($u, true).(empty($u->{$this->get_config('username_attribute')}) ? '' : ' ('.$u->{$this->get_config('username_attribute')}.')');
-                }
-                $names = implode(', ', $names);
-
                 $mform->addElement('static', '',
-                    get_string('viewsby', 'assignsubmission_maharaws', $views['displayname']),
-                    get_string('sharewith', 'assignsubmission_maharaws', array('site' => $remotehost->name, 'names' => $names))
+                    get_string('viewsby', 'assignsubmission_maharaws', $views['displayname'])
                 );
 
                 foreach ($views['data'] as $view) {

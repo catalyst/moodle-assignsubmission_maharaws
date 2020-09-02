@@ -113,17 +113,17 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         require_once($CFG->dirroot . '/mod/assign/submission/maharaws/lib.php');
 
-        $forceglobalcredentials = get_config('assignsubmission_maharaws','force_global_credentials');
+        $forceglobalcredentials = get_config('assignsubmission_maharaws', 'force_global_credentials');
 
-        if ($forceglobalcredentials){
+        if ($forceglobalcredentials) {
             $mform->addElement('static', 'assignsubmission_maharaws_label', get_string('gclabel', 'assignsubmission_maharaws'), get_string('gcdesc', 'assignsubmission_maharaws'));
         }
 
         $mform->addElement('text', 'assignsubmission_maharaws_url', get_string('url', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
         $mform->setType('assignsubmission_maharaws_url', PARAM_URL);
-        if (!empty(get_config('assignsubmission_maharaws','url'))) {
-            $mform->setDefault('assignsubmission_maharaws_url', get_config('assignsubmission_maharaws','url'));
-        } else if (!empty($this->get_config('assignsubmission_maharaws','url'))) {
+        if (!empty(get_config('assignsubmission_maharaws', 'url'))) {
+            $mform->setDefault('assignsubmission_maharaws_url', get_config('assignsubmission_maharaws', 'url'));
+        } else if (!empty($this->get_config('assignsubmission_maharaws', 'url'))) {
             $mform->setDefault('assignsubmission_maharaws_url', $this->get_config('url'));
         }
 
@@ -137,27 +137,27 @@ class assign_submission_maharaws extends assign_submission_plugin {
         if ($this->can_configure()) {
             $mform->addElement('text', 'assignsubmission_maharaws_key', get_string('key', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
             $mform->setType('assignsubmission_maharaws_key', PARAM_ALPHANUM);
-            if (!empty(get_config('assignsubmission_maharaws','key'))) {
-                $mform->setDefault('assignsubmission_maharaws_key', get_config('assignsubmission_maharaws','key'));
+            if (!empty(get_config('assignsubmission_maharaws', 'key'))) {
+                $mform->setDefault('assignsubmission_maharaws_key', get_config('assignsubmission_maharaws', 'key'));
             } else if (!empty($this->get_config('key'))) {
                 $mform->setDefault('assignsubmission_maharaws_key', $this->get_config('key'));
             }
             $mform->addHelpButton('assignsubmission_maharaws_key', 'key', 'assignsubmission_maharaws');
             $mform->hideIf('assignsubmission_maharaws_key', 'assignsubmission_maharaws_enabled', 'notchecked');
-            if ($forceglobalcredentials){
+            if ($forceglobalcredentials) {
                 $mform->freeze(['assignsubmission_maharaws_key']);
             }
 
             $mform->addElement('password', 'assignsubmission_maharaws_secret', get_string('secret', 'assignsubmission_maharaws'), array('maxlength' => 255, 'size' => 50));
             $mform->setType('assignsubmission_maharaws_secret', PARAM_ALPHANUM);
-            if (!empty(get_config('assignsubmission_maharaws','secret'))) {
-                $mform->setDefault('assignsubmission_maharaws_secret', get_config('assignsubmission_maharaws','secret'));
+            if (!empty(get_config('assignsubmission_maharaws', 'secret'))) {
+                $mform->setDefault('assignsubmission_maharaws_secret', get_config('assignsubmission_maharaws', 'secret'));
             } else if (!empty($this->get_config('secret'))) {
                 $mform->setDefault('assignsubmission_maharaws_secret', $this->get_config('secret'));
             }
             $mform->addHelpButton('assignsubmission_maharaws_secret', 'secret', 'assignsubmission_maharaws');
             $mform->hideIf('assignsubmission_maharaws_secret', 'assignsubmission_maharaws_enabled', 'notchecked');
-            if ($forceglobalcredentials){
+            if ($forceglobalcredentials) {
                 $mform->freeze(['assignsubmission_maharaws_secret']);
             }
         }
@@ -459,7 +459,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                                       array('users' => array( array($field => $username,
                                                                     'query' => $query))));
             $result = array_pop($result);
-            $result['views']['ids'] = array_map('intval', explode(',', $result['views']['ids']));
+            $result['views']['ids'] = array_map('intval', explode(', ', $result['views']['ids']));
 
             // Overwrite url with full URL.
             foreach ($result['views']['data'] as $key => $value) {
@@ -562,7 +562,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                        array('views' => array( array($field => $username,
                                                       'viewid' => $viewid,
                                                       'iscollection' => $iscollection,
-                                                      'viewoutcomes' => implode(',', $viewoutcomes))))
+                                                      'viewoutcomes' => implode(', ', $viewoutcomes))))
                        );
 
         } catch (Exception $e) {

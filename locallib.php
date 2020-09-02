@@ -113,9 +113,9 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         require_once($CFG->dirroot . '/mod/assign/submission/maharaws/lib.php');
 
-        $forceGlobalCredentials = get_config('assignsubmission_maharaws','force_global_credentials');
+        $forceglobalcredentials = get_config('assignsubmission_maharaws','force_global_credentials');
 
-        if ($forceGlobalCredentials){
+        if ($forceglobalcredentials){
             $mform->addElement('static', 'assignsubmission_maharaws_label', get_string('gclabel', 'assignsubmission_maharaws'), get_string('gcdesc', 'assignsubmission_maharaws'));
         }
 
@@ -130,7 +130,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $mform->addHelpButton('assignsubmission_maharaws_url', 'url', 'assignsubmission_maharaws');
         $mform->hideIf('assignsubmission_maharaws_url', 'assignsubmission_maharaws_enabled', 'notchecked');
 
-        if ($forceGlobalCredentials || !$this->can_configure()) {
+        if ($forceglobalcredentials || !$this->can_configure()) {
             $mform->freeze(['assignsubmission_maharaws_url']);
         }
 
@@ -144,7 +144,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             }
             $mform->addHelpButton('assignsubmission_maharaws_key', 'key', 'assignsubmission_maharaws');
             $mform->hideIf('assignsubmission_maharaws_key', 'assignsubmission_maharaws_enabled', 'notchecked');
-            if ($forceGlobalCredentials){
+            if ($forceglobalcredentials){
                 $mform->freeze(['assignsubmission_maharaws_key']);
             }
 
@@ -157,7 +157,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             }
             $mform->addHelpButton('assignsubmission_maharaws_secret', 'secret', 'assignsubmission_maharaws');
             $mform->hideIf('assignsubmission_maharaws_secret', 'assignsubmission_maharaws_enabled', 'notchecked');
-            if ($forceGlobalCredentials){
+            if ($forceglobalcredentials){
                 $mform->freeze(['assignsubmission_maharaws_secret']);
             }
         }

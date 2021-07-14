@@ -53,3 +53,38 @@ $settings->add(
                 ASSIGNSUBMISSION_MAHARAWS_SETTING_UNLOCK => new lang_string('yesunlock', 'assignsubmission_maharaws'))
     )
 );
+
+$settings->add(
+    new admin_setting_configcheckbox('assignsubmission_maharaws/force_global_credentials',
+        new lang_string('forceglobalcredentials', 'assignsubmission_maharaws'),
+        new lang_string('forceglobalcredentials_help', 'assignsubmission_maharaws'),
+        0
+    )
+);
+
+$settings->add(
+    new admin_setting_configtext('assignsubmission_maharaws/url',
+        new lang_string('url', 'assignsubmission_maharaws'),
+        new lang_string('url_help', 'assignsubmission_maharaws'),
+        "",
+        PARAM_URL
+    )
+);
+
+$settings->add(
+    new admin_setting_configtext('assignsubmission_maharaws/key',
+        new lang_string('key', 'assignsubmission_maharaws'),
+        new lang_string('key_help', 'assignsubmission_maharaws'),
+        "",
+        PARAM_ALPHANUM
+    )
+);
+
+$settings->add(
+        new admin_setting_configtext('assignsubmission_maharaws/secret',
+        new lang_string('secret', 'assignsubmission_maharaws'),
+        new lang_string('secret_help', 'assignsubmission_maharaws'),
+        "",
+        PARAM_ALPHANUM
+        )
+);

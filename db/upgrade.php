@@ -191,6 +191,9 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
         // Mahara savepoint reached.
         upgrade_plugin_savepoint($result, 2015021003, 'assignsubmission', 'maharaws');
     }
-
+    if ($oldversion < 2021081100) {
+        //We don't want to break existing sites, but we don't want new ones to do this either as it doesn't match how the lti login behaves.
+	set_config('legacy_ext_usr_username', true, 'assignsubmission_maharaws');
+    }
     return true;
 }

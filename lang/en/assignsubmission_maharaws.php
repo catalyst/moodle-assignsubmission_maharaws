@@ -85,3 +85,5 @@ $string['yeskeeplocked'] = 'Yes, keep locked';
 $string['yesunlock'] = 'Yes, but unlock after grading';
 $string['archiveonrelease'] = 'Archive when graded';
 $string['archiveonrelease_help'] = 'After a grade has been awarded, a snapshot of the portfolio will be taken.';
+$string['legacy_ext_username'] = "Use legacy ext_user_username format";
+$string['legacy_ext_username_help'] = "Enabling this option makes the ext_usr_username field format follow the following setup \"Fieldname:value\" It is not reccomended you enable this setting unless you have a specific reason to.";

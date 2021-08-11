@@ -88,3 +88,11 @@ $settings->add(
         PARAM_ALPHANUM
         )
 );
+
+$settings->add(
+        new admin_setting_configcheckbox('assignsubmission_maharaws/legacy_ext_usr_username',
+                new lang_string('legacy_ext_username', 'assignsubmission_maharaws'),
+                new lang_string('legacy_ext_username_help', 'assignsubmission_maharaws'),
+                0
+        )
+);

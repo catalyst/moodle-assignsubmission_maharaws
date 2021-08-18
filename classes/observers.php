@@ -35,7 +35,7 @@ class assignsubmission_maharaws_observers {
      * Process assignment grading function called by event trigger (see db/events.php).
      * It unlocks pages on Mahara when submission has been graded.
      *
-     * @param object $event Event data object passed over by mod_assign
+     * @param \mod_assign\event\submission_graded $event Event data object passed over by mod_assign
      * @return void
      */
     public static function submission_graded(\mod_assign\event\submission_graded $event) {
@@ -79,7 +79,7 @@ class assignsubmission_maharaws_observers {
      * Process workflow state update called by event trigger (see db/events.php).
      * It unlocks pages on Mahara when grades are released to students.
      *
-     * @param object $event Event data object passed over by mod_assign
+     * @param mod_assign\event\workflow_state_updated $event Event data object passed over by mod_assign
      * @return void
      */
     public static function workflow_state_updated(\mod_assign\event\workflow_state_updated $event) {
@@ -115,7 +115,7 @@ class assignsubmission_maharaws_observers {
     /**
      * Process unlocking Mahara page.
      *
-     * @param \assign_submission_mahara $maharasubmissionplugin
+     * @param \assign_submission_maharaws $maharasubmissionplugin
      * @param object $maharasubmission Mahara submission data object.
      * @return void
      */
@@ -130,7 +130,10 @@ class assignsubmission_maharaws_observers {
         if ($maharasubmissionplugin->get_error()) {
             throw new moodle_exception('releasefailed', 'error', $maharasubmissionplugin->get_error());
         } else {
-            $maharasubmissionplugin->set_mahara_submission_status($maharasubmission->submission, assign_submission_maharaws::STATUS_RELEASED);
+            $maharasubmissionplugin->set_mahara_submission_status(
+                $maharasubmission->submission,
+                assign_submission_maharaws::STATUS_RELEASED
+            );
         }
     }
 }

@@ -1,3 +1,5 @@
+![Build Status](https://github.com/catalyst/assignsubmission-maharaws/actions/workflows/ci.yml/badge.svg?branch=master)
+
 moodle-assignsubmission_maharaws
 ============================
 

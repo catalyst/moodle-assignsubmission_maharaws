@@ -19,7 +19,7 @@
  *
  * @package    assignsubmission_maharaws
  * @copyright  2020 Catalyst IT
- * @copyright  2014 Lancaster University (@link http://www.lancaster.ac.uk/)
+ * @copyright  2014 Lancaster University {@link http://www.lancaster.ac.uk/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,14 +30,9 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * The assignsubmission_maharaws submission_created event class.
  *
- * @property-read array $other {
- *      Extra information about the event.
- *
- * }
- *
  * @package    assignsubmission_maharaws
  * @since      Moodle 2.7
- * @copyright  2014 Lancaster University (@link http://www.lancaster.ac.uk/)
+ * @copyright  2014 Lancaster University {@link http://www.lancaster.ac.uk/}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class submission_created extends \mod_assign\event\submission_created {

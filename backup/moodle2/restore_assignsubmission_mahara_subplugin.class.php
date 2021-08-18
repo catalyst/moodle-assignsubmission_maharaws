@@ -46,7 +46,7 @@ class restore_assignsubmission_maharaws_subplugin extends restore_subplugin {
         $elepath = $this->get_pathfor('/submission_maharaws');
         $paths[] = new restore_path_element($elename, $elepath);
 
-        return $paths; // And we return the interesting paths
+        return $paths; // And we return the interesting paths.
     }
 
     /**

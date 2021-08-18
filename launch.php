@@ -44,21 +44,23 @@ require_capability('mod/assign:view', $context);
 $url = new \moodle_url('/mod/assign/view.php', array('id' => $id, 'sesskey' => sesskey()));
 $returnurl = $url->out(false);
 $urlparts = parse_url($CFG->wwwroot);
-
-// Determine the Mahara field and the username value.
-$usernameattribute = mahara_assignsubmission_get_config($cm->instance, 'username_attribute');
-$remoteuser = mahara_assignsubmission_get_config($cm->instance, 'remoteuser');
-$username = (!empty($CFG->mahara_test_user) ? $CFG->mahara_test_user : $USER->{$usernameattribute});
-$field =
-// Now the trump all - we actually want to test against the institutions auth instances remoteuser.
-    ($remoteuser ?
-     'remoteuser' :
-// Else idnumber maps to studentid.
-     ($usernameattribute == 'idnumber' ?
-     'studentid' :
-// Else the same attribute name in Mahara.
-     $usernameattribute));
-
+$ext_user_username = $USER->username;
+if ( get_config('assignsubmission_maharaws' ,'legacy_ext_usr_username') ) {
+	// Determine the Mahara field and the username value.
+	$usernameattribute = mahara_assignsubmission_get_config($cm->instance, 'username_attribute');
+	$remoteuser = mahara_assignsubmission_get_config($cm->instance, 'remoteuser');
+	$username = (!empty($CFG->mahara_test_user) ? $CFG->mahara_test_user : $USER->{$usernameattribute});
+	$field =
+	// Now the trump all - we actually want to test against the institutions auth instances remoteuser.
+	    ($remoteuser ?
+	     'remoteuser' :
+	// Else idnumber maps to studentid.
+	     ($usernameattribute == 'idnumber' ?
+	     'studentid' :
+	// Else the same attribute name in Mahara.
+	     $usernameattribute));
+	$ext_user_username = $field.':'.$username;
+}
 $requestparams = array(
         'resource_link_title' => $cm->name,
         'resource_link_description' => $cm->name,
@@ -74,7 +76,7 @@ $requestparams = array(
         'lis_person_name_given' => $USER->firstname,
         'lis_person_name_family' => $USER->lastname,
         'lis_person_name_full' => $USER->firstname . ' ' . $USER->lastname,
-        'ext_user_username' => $field.':'.$username,
+        'ext_user_username' => $ext_user_username,
         'launch_presentation_return_url' => $returnurl,
         'launch_presentation_locale' => current_language(),
         'ext_lms' => 'moodle-2',

@@ -238,10 +238,6 @@ class assign_submission_maharaws extends assign_submission_plugin {
             'eq',
             ASSIGNSUBMISSION_MAHARAWS_SETTING_DONTLOCK
         );
-
-        if (!$this->can_configure()) {
-            $mform->freeze(['assignsubmission_maharaws_lockpages']);
-        }
     }
 
     /**

@@ -410,7 +410,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         }
         $viewids = $views['ids'];
         list($insql, $inparams) = $DB->get_in_or_equal($viewids, SQL_PARAMS_NAMED, 'param', true, true);
-        $sql = "SELECT mws.id,* from (
+        $sql = "SELECT mws.id, us.* from (
               select value as url,
                       assignment
               FROM {assign_plugin_config}

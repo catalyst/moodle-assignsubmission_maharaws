@@ -48,6 +48,19 @@ class provider implements metadataprovider, \mod_assign\privacy\assignsubmission
      */
     public static function get_metadata(collection $collection) : collection {
 
+        $collection->add_external_location_link('assignsubmission_maharaws', [
+            'userid' => 'privacy:metadata:assignmentsubmission_maharaws:userid',
+            'username' => 'privacy:metadata:assignmentsubmission_maharaws:username',
+            'fullname' => 'privacy:metadata:assignmentsubmission_maharaws:fullname',
+            'email' => 'privacy:metadata:assignmentsubmission_maharaws:email',
+            'idnumber' => 'privacy:metadata:assignmentsubmission_maharaws:idnumber',
+            'firstname' => 'privacy:metadata:assignmentsubmission_maharaws:firstname',
+            'lastname' => 'privacy:metadata:assignmentsubmission_maharaws:lastname',
+            'courseid' => 'privacy:metadata:assignmentsubmission_maharaws:courseid',
+            'courseshortname' => 'privacy:metadata:assignmentsubmission_maharaws:courseshortname',
+            'coursefullname' => 'privacy:metadata:assignmentsubmission_maharaws:coursefullname',
+        ]   , 'privacy:metadata:assignsubmission_maharaws');
+
         $collection->add_database_table('assignsubmission_maharaws', [
             'assignment' => 'privacy:metadata:assignment',
             'submission' => 'privacy:metadata:submission',

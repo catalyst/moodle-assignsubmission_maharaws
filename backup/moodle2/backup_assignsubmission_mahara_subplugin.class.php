@@ -49,7 +49,7 @@ class backup_assignsubmission_maharaws_subplugin extends backup_subplugin {
         $subpluginelement = new backup_nested_element(
             'submission_maharaws',
             null,
-            array('viewid', 'viewurl', 'viewtitle', 'submission')
+            array('viewid', 'viewurl', 'viewtitle', 'submission', 'iscollection', 'viewstatus')
         );
 
         // Connect XML elements into the tree.

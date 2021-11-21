@@ -1,4 +1,4 @@
-![Build Status](https://github.com/catalyst/assignsubmission-maharaws/actions/workflows/ci.yml/badge.svg?branch=master)
+![Build Status](https://github.com/catalyst/assignsubmission-maharaws/actions/workflows/ci.yml/badge.svg?branch=main)
 
 Mahara assignment submission plugin for Moodle
 ===============================================
@@ -25,6 +25,15 @@ grading has finished.
 The plugin requires that Mahara 20.10 or newer is installed. If you are using 
 Mahara 20.04 or earlier (not supported with security fixes by the project any more),
 apply the patches from the [issue report](https://bugs.launchpad.net/mahara/+bug/1882461).
+
+
+Branches
+--------
+
+| Moodle version     | Mahara version  | Branch  |
+| ----------------- | ---------------- | ---- |
+| Moodle 3.9+       | Mahara 20.10+ | main |
+
 
 
 Install the Moodle plugin

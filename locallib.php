@@ -28,49 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/oauthlib.php');
 
 /**
- * This class mahara_oauth.
- *
- * @package    assignsubmission_maharaws
- * @copyright  2020 Catalyst IT
- * @copyright  2012 Lancaster University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class mahara_oauth extends oauth_helper {
-
-    /**
-     * Request oauth protected resources
-     *
-     * @param string $method
-     * @param string $url
-     * @param array $params
-     * @param string $token
-     * @param string $secret
-     *
-     * @return false|mixed
-     */
-    public function request($method, $url, $params=array(), $token='', $secret='') {
-        $token = '';
-        $this->sign_secret = $secret.'&'.$token;  // We never pass the token, only the secret.
-        if (strtolower($method) === 'post' && !empty($params)) {
-            $oauthparams = $this->prepare_oauth_parameters($url, array('oauth_token' => $token) + $params, $method);
-        } else {
-            $oauthparams = $this->prepare_oauth_parameters($url, array('oauth_token' => $token), $method);
-        }
-        $this->setup_oauth_http_header($oauthparams);
-        $content = call_user_func_array(array($this->http, strtolower($method)), array($url, $params, $this->http_options));
-
-        if ($this->http->info['http_code'] != 200) {
-            throw new moodle_exception('webservice call was not successful');
-        }
-
-        // Reset http header and options to prepare for the next request.
-        $this->http->resetHeader();
-        // Return request return value.
-        return $content;
-    }
-}
-
-/**
  * library class for Mahara submission plugin extending submission plugin base class
  *
  * @package    assignsubmission_maharaws
@@ -342,7 +299,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             'api_root' => $endpoint,
         );
 
-        $client = new mahara_oauth($args);
+        $client = new \assignsubmission_maharaws\mahara_oauth($args);
         if (!empty($CFG->disablesslchecks)) {
             $options = array('CURLOPT_SSL_VERIFYPEER' => 0, 'CURLOPT_SSL_VERIFYHOST' => 0);
             $client->setup_oauth_http_options($options);

@@ -1196,6 +1196,27 @@ class assign_submission_maharaws extends assign_submission_plugin {
     }
 
     /**
+     *
+     * Remove submission, happens when submisions are removed/revoked.
+     * Additionally releases the submitted mahara view.
+     * @param stdClass $submission The submission to be removed.
+     */
+    public function remove(stdClass $submission) {
+        global $DB;
+        $maharasubmission = $this->get_mahara_submission($submission->id);
+        if ($maharasubmission && $maharasubmission->viewstatus == self::STATUS_SUBMITTED) {
+            if ($this->release_submitted_view($maharasubmission->viewid, array(), $maharasubmission->iscollection) === false) {
+                throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
+            }
+            $this->set_mahara_submission_status($maharasubmission->submission, self::STATUS_RELEASED);
+        }
+        if ($submission->id || $submission->id == 0) {
+            $DB->delete_records('assignsubmission_maharaws', array('submission' => $submission->id));
+        }
+        return true;
+    }
+
+    /**
      * Carry out any extra processing required when a student is given a new attempt
      * (i.e. when the submission is "reopened"
      * @param stdClass $oldsubmission The previous attempt

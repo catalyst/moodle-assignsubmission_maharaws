@@ -62,7 +62,7 @@ class mahara_oauth extends \oauth_helper
         $content = call_user_func_array(array($this->http, strtolower($method)), array($url, $params, $this->http_options));
 
         if ($this->http->info['http_code'] != 200) {
-            throw new moodle_exception('webservice call was not successful');
+            throw new \moodle_exception('webservice call was not successful');
         }
 
         // Reset http header and options to prepare for the next request.

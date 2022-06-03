@@ -28,5 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->version   = 2021112200;
 $plugin->requires  = 2020061500;
 $plugin->component = 'assignsubmission_maharaws';
+$plugin->supported = [39, 401];  // Available as of Moodle 3.9.0 or later.
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->release   = '1.5.1';

@@ -38,8 +38,7 @@ require_once($CFG->libdir.'/oauthlib.php');
  * @copyright 2012 Lancaster University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mahara_oauth extends \oauth_helper
-{
+class mahara_oauth extends \oauth_helper {
 
     /**
      * Request oauth protected resources

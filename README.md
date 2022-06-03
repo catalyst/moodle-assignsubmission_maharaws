@@ -1,4 +1,4 @@
-![Build Status](https://github.com/catalyst/assignsubmission-maharaws/actions/workflows/ci.yml/badge.svg?branch=main)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/catalyst/moodle-assignsubmission_maharaws/ci/main)
 
 Mahara assignment submission plugin for Moodle
 ===============================================

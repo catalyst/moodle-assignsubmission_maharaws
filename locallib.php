@@ -375,8 +375,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 plugin = 'maharaws'
                 AND subtype = 'assignsubmission'
                 AND name = 'url'
-              ) AS us JOIN {assignsubmission_maharaws} as mws on us.assignment = mws.assignment where url = :url AND
-                                                                                                      viewid {$insql}";
+          ) AS us JOIN {assignsubmission_maharaws} as mws on us.assignment = mws.assignment where url = :url
+        AND viewstatus = 'submitted' AND viewid {$insql}";
         $params = [
             'url' => $this->get_config('url')
         ];
@@ -548,21 +548,30 @@ class assign_submission_maharaws extends assign_submission_plugin {
      */
     public function submit_view($submission, $viewid, $iscollection, $viewownermoodleid = null) {
         global $USER, $DB, $CFG;
-
         // Verify that it's not already submitted to another Mahara assignment in this Moodle site.
         // We can't do this on the Mahara side, because Mahara only knows the remote site's wwwroot.
-        if (
-                $DB->record_exists_select(
-                        'assignsubmission_maharaws',
-                        'viewid = ? AND iscollection = ? AND viewstatus = ? AND assignment != ?',
-                        array(
-                                $viewid,
-                                ($iscollection ? 1 : 0),
-                                self::STATUS_SUBMITTED,
-                                $submission->assignment,
-                        )
-                )
-        ) {
+
+        $sql = "SELECT mws.id,
+                us.*
+         FROM   (SELECT value AS url,
+                        assignment
+                 FROM   {assign_plugin_config}
+                 WHERE  plugin = 'maharaws'
+                        AND subtype = 'assignsubmission'
+                        AND NAME = 'url') us
+                JOIN {assignsubmission_maharaws} mws
+                  ON us.assignment = mws.assignment
+         WHERE  url = :url
+                AND viewstatus = 'submitted'
+                AND viewid = :viewid
+                AND 'iscollection' = :iscollection  ";
+        $params = [
+            'url' => $this->get_config('url'),
+            'viewid' => $viewid,
+            'iscollection' => $iscollection
+        ];
+        $alreadyselected = $DB->get_records_sql($sql, $params);
+        if (!empty($alreadyselected)) {
             throw new moodle_exception('errorvieworcollectionalreadysubmitted', 'assignsubmission_maharaws');
         }
 
@@ -742,7 +751,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             }
 
             // Lock submission on mahara side.
-            if (!$response = $this->submit_view($submission, $data->viewid, $iscollection)) {
+            if (!$response = $this->submit_view($submission, $data->viewid, $iscollection, $submission->userid)) {
                 throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
             }
 
@@ -871,7 +880,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         $maharasubmission = $this->get_mahara_submission($submission->id);
         // Lock view on Mahara side as it has been submitted for assessment.
-        if (!$response = $this->submit_view($submission, $maharasubmission->viewid, $maharasubmission->iscollection)) {
+        if (!$response = $this->submit_view($submission, $maharasubmission->viewid, $maharasubmission->iscollection, $submission->userid)) {
             throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
         }
         $maharasubmission->viewurl = $response['url'];
@@ -1183,6 +1192,27 @@ class assign_submission_maharaws extends assign_submission_plugin {
         // Now delete records.
         $DB->delete_records('assignsubmission_maharaws', array('assignment' => $this->assignment->get_instance()->id));
 
+        return true;
+    }
+
+    /**
+     *
+     * Remove submission, happens when submisions are removed/revoked.
+     * Additionally releases the submitted mahara view.
+     * @param stdClass $submission The submission to be removed.
+     */
+    public function remove(stdClass $submission) {
+        global $DB;
+        $maharasubmission = $this->get_mahara_submission($submission->id);
+        if ($maharasubmission && $maharasubmission->viewstatus == self::STATUS_SUBMITTED) {
+            if ($this->release_submitted_view($maharasubmission->viewid, array(), $maharasubmission->iscollection) === false) {
+                throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
+            }
+            $this->set_mahara_submission_status($maharasubmission->submission, self::STATUS_RELEASED);
+        }
+        if ($submission->id || $submission->id == 0) {
+            $DB->delete_records('assignsubmission_maharaws', array('submission' => $submission->id));
+        }
         return true;
     }
 

@@ -187,7 +187,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         } else {
             $mform->setDefault('assignsubmission_maharaws_archiveonrelease', 0);
         }
-
+        $mform->hideIf('assignsubmission_maharaws_archiveonrelease', 'assignsubmission_maharaws_enabled', 'notchecked');
         $mform->addHelpButton('assignsubmission_maharaws_archiveonrelease', 'archiveonrelease', 'assignsubmission_maharaws');
         $mform->disabledIf(
             'assignsubmission_maharaws_archiveonrelease',

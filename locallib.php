@@ -211,16 +211,24 @@ class assign_submission_maharaws extends assign_submission_plugin {
             if ($data->assignsubmission_maharaws_lockpages == ASSIGNSUBMISSION_MAHARAWS_SETTING_DONTLOCK) {
                 $data->assignsubmission_maharaws_archiveonrelease = 0;
             }
-
-            $this->set_config('url', $data->assignsubmission_maharaws_url);
             $this->set_config('key', $data->assignsubmission_maharaws_key);
             $this->set_config('secret', $data->assignsubmission_maharaws_secret);
-            $this->set_config('debug', false);
-            $this->set_config('remoteuser', false);
             $this->set_config('lock', $data->assignsubmission_maharaws_lockpages);
-            $this->set_config('username_attribute', 'email');
             $this->set_config('archiveonrelease', $data->assignsubmission_maharaws_archiveonrelease);
+        } else {
+            if (get_config('assignsubmission_maharaws', 'lock') == ASSIGNSUBMISSION_MAHARAWS_SETTING_DONTLOCK) {
+                $data->assignsubmission_maharaws_archiveonrelease = 0;
+            }
+            $this->set_config('key', get_config('assignsubmission_maharaws', 'key'));
+            $this->set_config('secret', get_config('assignsubmission_maharaws', 'secret'));
+            $this->set_config('lock', get_config('assignsubmission_maharaws', 'lock'));
         }
+
+        $this->set_config('url', $data->assignsubmission_maharaws_url);
+        $this->set_config('archiveonrelease', $data->assignsubmission_maharaws_archiveonrelease);
+        $this->set_config('debug', false);
+        $this->set_config('remoteuser', false);
+        $this->set_config('username_attribute', 'email');
 
         // Test Mahara connection.
         try {

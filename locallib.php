@@ -760,7 +760,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             // TODO: Replace this hack with something more robust. It's an oversight and a security hole, that the
             // access code remains in place in Mahara when you release the page via XML-RPC.
             if (!$this->get_config('lock')) {
-                $this->release_submitted_view($data->viewid, array(), $iscollection);
+                $this->release_submitted_view($response['copyid'], array(), $iscollection);
                 $status = self::STATUS_RELEASED;
             } else {
                 $status = self::STATUS_SUBMITTED;
@@ -812,7 +812,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 }
 
                 // Update submission data.
-                $maharasubmission->viewid = $data->viewid;
+                $maharasubmission->viewid = $response['copyid'];
                 $maharasubmission->viewurl = $response['url'];
                 $maharasubmission->viewtitle = clean_text($response['title']);
                 $maharasubmission->viewstatus = $status;
@@ -829,7 +829,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 } else {
                     // We are dealing with the new submission.
                     $maharasubmission = new stdClass();
-                    $maharasubmission->viewid = $data->viewid;
+                    $maharasubmission->viewid = $response['copyid'];
                     $maharasubmission->viewurl = $response['url'];
                     $maharasubmission->viewtitle = clean_text($response['title']);
                     $maharasubmission->viewstatus = $status;
@@ -883,6 +883,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         if (!$response = $this->submit_view($submission, $maharasubmission->viewid, $maharasubmission->iscollection, $submission->userid)) {
             throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
         }
+        $maharasubmission->viewid = $response['copyid'];
         $maharasubmission->viewurl = $response['url'];
         $maharasubmission->viewstatus = self::STATUS_SUBMITTED;
 

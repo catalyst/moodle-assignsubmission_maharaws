@@ -32,7 +32,7 @@ Branches
 
 | Moodle version     | Mahara version  | Branch  |
 | ----------------- | ---------------- | ---- |
-| Moodle 3.9+       | Mahara 20.10+ | main |
+| Moodle 3.9+       | Mahara 23.04 | main |
 
 
 

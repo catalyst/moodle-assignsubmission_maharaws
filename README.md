@@ -22,9 +22,8 @@ changed to "Released"). Alternatively, portfolios can also be submitted without
 locking. If portfolios are locked, they can be archived automatically in Mahara once
 grading has finished.
 
-The plugin requires that Mahara 20.10 or newer is installed. If you are using 
-Mahara 20.04 or earlier (not supported with security fixes by the project any more),
-apply the patches from the [issue report](https://bugs.launchpad.net/mahara/+bug/1882461).
+The plugin requires that Mahara 23.04 or newer is installed. If you are using 
+Mahara 22.10 it will be neccesary to use the older versions of the plugin.
 
 
 Branches

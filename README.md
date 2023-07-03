@@ -22,18 +22,14 @@ changed to "Released"). Alternatively, portfolios can also be submitted without
 locking. If portfolios are locked, they can be archived automatically in Mahara once
 grading has finished.
 
-The plugin requires that Mahara 22.10 or newer is installed. If you are using a version prior to 
-Mahara 22.10 it will be neccesary to use the older versions of the plugin.
-
-
-Branches
+Supported Branches
 --------
 
 | Moodle version     | Mahara version  | Branch  |
-| ----------------- | ---------------- | ---- |
-| Moodle 3.9+       | Mahara 22.10 | main |
+| ----------------- | ---------------- | ----    |
+| Moodle 3.9+       | Mahara 22.04*    | main    |
 
-
+* Note: This plugin may work in some older unsupported Mahara versions as well, however we do not include these in our testing processes.
 
 Install the Moodle plugin
 --------------------------------------------------

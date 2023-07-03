@@ -97,3 +97,4 @@ $string['privacy:metadata:assignmentsubmission_maharaws:idnumber'] = "Your idnum
 $string['privacy:metadata:assignmentsubmission_maharaws:courseid'] = "The courseid is sent from moodle to allow the remote system to submit your portfolio to the correct course";
 $string['privacy:metadata:assignmentsubmission_maharaws:courseshortname'] = "The course short name is sent  to the remote system to allow a better user experience.";
 $string['privacy:metadata:assignmentsubmission_maharaws:coursefullname'] = "The course full name is sent to allow the remote system to allow a better user experience.";
+$string['errorinvalidapistring'] = "The mahara instance has returned an api string with an unexpected format.";

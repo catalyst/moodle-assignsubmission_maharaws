@@ -594,7 +594,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                                         'viewid' => $viewid,
                                         'iscollection' => $iscollection,
                                         'lock' => true,
-                                        'apilevel' => 'moodle-assignsubmission-mahara:2',
+                                        'apilevel' => 'moodle-assignsubmission-mahara:3',
                                         'wwwroot' => $CFG->wwwroot,
                                     ),
                                 )
@@ -760,7 +760,12 @@ class assign_submission_maharaws extends assign_submission_plugin {
             // TODO: Replace this hack with something more robust. It's an oversight and a security hole, that the
             // access code remains in place in Mahara when you release the page via XML-RPC.
             if (!$this->get_config('lock')) {
-                $this->release_submitted_view($data->viewid, array(), $iscollection);
+                $apilevel = $this->process_apilevel($response['apilevel']);
+                if ($apilevel >= 3 ) {
+                    $this->release_submitted_view($response['copyid'], array(), $iscollection);
+                } else {
+                    $this->release_submitted_view($response['viewid'], array(), $iscollection);
+                }
                 $status = self::STATUS_RELEASED;
             } else {
                 $status = self::STATUS_SUBMITTED;
@@ -801,7 +806,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 'groupid' => $groupid,
                 'groupname' => $groupname
             );
-
+            $apilevel = $this->process_apilevel($response['apilevel']);
             if ($maharasubmission) {
                 // If we are updating previous submission, release previous submission first (if it's locked).
                 if ($maharasubmission->viewid != $data->viewid && $maharasubmission->viewstatus == self::STATUS_SUBMITTED) {
@@ -812,7 +817,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 }
 
                 // Update submission data.
-                $maharasubmission->viewid = $data->viewid;
+                if ( $apilevel >= 3 ) {
+                    $maharasubmission->viewid = $response['copyid'];
+                } else {
+                    $maharasubmission->viewid = $response['viewid'];
+                }
                 $maharasubmission->viewurl = $response['url'];
                 $maharasubmission->viewtitle = clean_text($response['title']);
                 $maharasubmission->viewstatus = $status;
@@ -829,7 +838,12 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 } else {
                     // We are dealing with the new submission.
                     $maharasubmission = new stdClass();
-                    $maharasubmission->viewid = $data->viewid;
+                    if ( $apilevel >= 3 ) {
+                        $maharasubmission->viewid = $response['copyid'];
+                    } else {
+                        $maharasubmission->viewid = $response['viewid'];
+                    }
+
                     $maharasubmission->viewurl = $response['url'];
                     $maharasubmission->viewtitle = clean_text($response['title']);
                     $maharasubmission->viewstatus = $status;
@@ -882,6 +896,12 @@ class assign_submission_maharaws extends assign_submission_plugin {
         // Lock view on Mahara side as it has been submitted for assessment.
         if (!$response = $this->submit_view($submission, $maharasubmission->viewid, $maharasubmission->iscollection, $submission->userid)) {
             throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
+        }
+        $apilevel = $this->process_apilevel($response['apilevel']);
+        if ( $apilevel >= 3 ) {
+            $maharasubmission->viewid = $response['copyid'];
+        } else {
+            $maharasubmission->viewid = $response['viewid'];
         }
         $maharasubmission->viewurl = $response['url'];
         $maharasubmission->viewstatus = self::STATUS_SUBMITTED;
@@ -1249,6 +1269,21 @@ class assign_submission_maharaws extends assign_submission_plugin {
             throw new moodle_exception('errorinvalidstatus', 'assignsubmission_maharaws');
         }
         return $DB->set_field('assignsubmission_maharaws', 'viewstatus', $status, array('submission' => $submissionid));
+    }
+
+    /**
+     * Helper method to process API level strings into a useful value
+     *
+     * @param string $apistring Api string from upstream mahara instance.
+     * @throws moodle_exception Invalid api string exception
+     * @return int
+     */
+    private function process_apilevel($apilevelstring) {
+        $apinumber = explode(':', $apilevelstring)[1];
+        if (!is_numeric($apinumber)) {
+            throw new moodle_exception('errorinvalidapistring', 'assignsubmission_maharaws');
+        }
+        return $apinumber;
     }
 
     /**

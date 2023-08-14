@@ -1161,33 +1161,6 @@ class assign_submission_maharaws extends assign_submission_plugin {
     }
 
     /**
-     * Formatting for log info
-     *
-     * @param stdClass $submission The new submission
-     * @return string
-     */
-    public function format_for_log(stdClass $submission) {
-        global $DB;
-        try {
-
-            $remotehost = (object)$this->webservice_call("mahara_user_get_extended_context", array());
-        } catch (Exception $e) {
-            debugging("Remote host webservice call failed: ".$e->getCode().":".$e->getMessage());
-            throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());
-        }
-        $remotehost->jumpurl = $remotehost->siteurl;
-        $remotehost->name = $remotehost->sitename;
-
-        if ($maharasubmission = $this->get_mahara_submission($submission->id)) {
-            $maharasubmission->remotehostname = $remotehost->name;
-            $output = get_string('outputforlog', 'assignsubmission_maharaws', $maharasubmission);
-        } else {
-            $output = get_string('outputforlognew', 'assignsubmission_maharaws', $remotehost->name);
-        }
-        return $output;
-    }
-
-    /**
      * The assignment has been deleted - cleanup
      *
      * @return bool

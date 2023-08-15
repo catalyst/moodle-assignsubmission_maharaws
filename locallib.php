@@ -206,7 +206,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             if (empty(get_config('assignsubmission_maharaws', 'force_global_credentials'))) {
                 $this->set_config('url', $data->assignsubmission_maharaws_url);
                 $this->set_config('key', $data->assignsubmission_maharaws_key);
-                $this->set_config('secret', $data->assignsubmission_maharaws_secret);    
+                $this->set_config('secret', $data->assignsubmission_maharaws_secret);
             }
             $this->set_config('debug', false);
             $this->set_config('remoteuser', false);

@@ -383,7 +383,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
           ) AS us JOIN {assignsubmission_maharaws} as mws on us.assignment = mws.assignment where url = :url
         AND viewstatus = 'submitted' AND viewid {$insql}";
         $params = [
-            'url' => $this->get_url()
+            'url' => $this->get_config_default('url')
         ];
         $params += $inparams;
         $alreadyselected = $DB->get_records_sql($sql, $params);

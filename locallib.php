@@ -1252,7 +1252,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
     /**
      * Helper method to process API level strings into a useful value
      *
-     * @param string $apistring Api string from upstream mahara instance.
+     * @param string $apilevelstring Api string from upstream mahara instance.
      * @throws moodle_exception Invalid api string exception
      * @return int
      */
@@ -1282,9 +1282,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
              $this->get_config('username_attribute')));
 
     }
+
     /**
      * Helper function to get url to use in site.
      *
+     * @param string $config
      * @return string
      */
     public function get_config_default($config) {

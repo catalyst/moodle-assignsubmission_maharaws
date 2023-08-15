@@ -284,6 +284,15 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $url = $this->get_config_default('url');
         $key = $this->get_config_default('key');
         $secret = $this->get_config_default('secret');
+        if (empty($url)) {
+            throw new Exception("The Mahara URL is not set correctly.");
+        }
+        if (empty($key)) {
+            throw new Exception("The Mahara Key is not set correctly.");
+        }
+        if (empty($secret)) {
+            throw new Exception("The Mahara secret is not set correctly.");
+        }
 
         $endpoint = $url .
             (preg_match('/\/$/', $url) ? '' : '/') .

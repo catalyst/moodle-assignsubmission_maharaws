@@ -1289,14 +1289,14 @@ class assign_submission_maharaws extends assign_submission_plugin {
      */
     public function get_config_default($config) {
         if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials'))) {
-            return get_config('assignsubmission_maharaws', $config);
+            return trim(get_config('assignsubmission_maharaws', $config));
         } else {
             // Check if this is set at activity level.
             if (!empty($this->get_config($config))) {
-                return $this->get_config($config);
+                return trim($this->get_config($config));
             }
             // Return site default. (if not set at activity level).
-            return get_config('assignsubmission_maharaws', $config);
+            return trim(get_config('assignsubmission_maharaws', $config));
         }
     }
 }

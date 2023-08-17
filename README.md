@@ -79,6 +79,9 @@ Configure Mahara
       4.2 Set the authentication method that your institution members shall also be able to 
       use and click the 'Save' button.
 
+5. Ensure your Mahara server does not block the oauth authorization header.   
+Moodle passes the oauth tokens in an authorization header to the Mahara site, some webservers will block this information and you may get an error "Invalid token selected or none supplied" - If this occurs take a look at this stack-overflow post for information on to fix: https://stackoverflow.com/questions/26475885/authorization-header-missing-in-php-post-request
+
 Configure Moodle
 ----------------
 

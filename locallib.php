@@ -83,9 +83,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         require_once($CFG->dirroot . '/mod/assign/submission/maharaws/lib.php');
 
-        $forceglobalcredentials = get_config('assignsubmission_maharaws', 'force_global_credentials');
-
-        if ($forceglobalcredentials) {
+        $config = get_config('assignsubmission_maharaws');
+        if (!empty($config->force_global_credentials)) {
+            if (empty($config->url) || empty($config->key) || empty($config->secret)) {
+                return;
+            }
             // Static elemment doesn't allow hideif so we use a group to do this (MDL-66251).
             $group = [];
             $group[] = $mform->createElement('static', 'assignsubmission_maharaws_label',
@@ -95,7 +97,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             $mform->hideIf('maharawslabelgroup', 'assignsubmission_maharaws_enabled', 'notchecked');
         }
 
-        if (!$forceglobalcredentials) {
+        if (empty($config->force_global_credentials)) {
             $mform->addElement(
                 'text',
                 'assignsubmission_maharaws_url',
@@ -198,6 +200,15 @@ class assign_submission_maharaws extends assign_submission_plugin {
     public function save_settings(stdClass $data) {
         global $CFG;
         require_once($CFG->dirroot . '/mod/assign/submission/maharaws/lib.php');
+
+        $config = get_config('assignsubmission_maharaws');
+        if (!empty($config->force_global_credentials)) {
+            if (empty($config->url) || empty($config->key) || empty($config->secret)) {
+                $this->set_error(
+                    get_string('forceglobalcredentialserror', 'assignsubmission_maharaws'));
+                return false;
+            }
+        }
 
         if ($this->can_configure()) {
             if ($data->assignsubmission_maharaws_lockpages == ASSIGNSUBMISSION_MAHARAWS_SETTING_DONTLOCK) {

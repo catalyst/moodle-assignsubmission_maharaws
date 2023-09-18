@@ -45,6 +45,7 @@ $string['errorwsrequest'] = 'Attempt to send Mahara request resulted in error: {
 $string['eventassessableuploaded'] = 'A page or collection has been submitted.';
 $string['forceglobalcredentials'] = 'Force global credentials';
 $string['forceglobalcredentials_help'] = 'Always use these credentials to connect to Mahara';
+$string['forceglobalcredentialserror'] = 'Mahara url and credentials have been forced but are not set at the site level - please ask your administrator to configure the Mahara submission plugin correctly.';
 $string['forceglobalcredentialswarning'] = 'Mahara url and credentials have been set globally';
 $string['gclabel'] = 'Global credentials';
 $string['invalidurlhelp'] = " Check that URL and OAuth credentials are correct and that there is a valid SSL certificate if HTTPS is used. Also check that the correct functions are assigned to the OAuth access.";

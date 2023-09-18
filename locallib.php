@@ -332,7 +332,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                              $secret);
         $data = json_decode($content, true);
         if (empty($data)) {
-            throw new Exception("No JSON was returned in response from Mahara");
+            throw new Exception("No JSON was returned in response from Mahara url:".$url);
         }
 
         if (isset($data['error']) && $data['error'] == true ) {

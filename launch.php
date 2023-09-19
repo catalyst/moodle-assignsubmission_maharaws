@@ -45,10 +45,12 @@ $url = new \moodle_url('/mod/assign/view.php', array('id' => $id, 'sesskey' => s
 $returnurl = $url->out(false);
 $urlparts = parse_url($CFG->wwwroot);
 $extuserusername = $USER->username;
+$assign = new assign($context, $cm, $course);
+$maharasubmission = new assign_submission_maharaws($assign, 'assignsubmission_maharaws');
 if ( get_config('assignsubmission_maharaws', 'legacy_ext_usr_username') ) {
     // Determine the Mahara field and the username value.
-    $usernameattribute = mahara_assignsubmission_get_config($cm->instance, 'username_attribute');
-    $remoteuser = mahara_assignsubmission_get_config($cm->instance, 'remoteuser');
+    $usernameattribute = $maharasubmission->get_config_default('username_attribute');
+    $remoteuser = $maharasubmission->get_config_default('remoteuser');
     $username = (!empty($CFG->mahara_test_user) ? $CFG->mahara_test_user : $USER->{$usernameattribute});
     $field =
         // Now the trump all - we actually want to test against the institutions auth instances remoteuser.
@@ -91,13 +93,13 @@ $requestparams = array(
         );
 
 
-$endpoint = mahara_assignsubmission_get_config($cm->instance, 'url');
+$endpoint = $maharasubmission->get_config_default('url');
 $endpoint = $endpoint.(preg_match('/\/$/', $endpoint) ? '' : '/').'webservice/rest/server.php';
-$key = mahara_assignsubmission_get_config($cm->instance, 'key');
-$secret = mahara_assignsubmission_get_config($cm->instance, 'secret');
+$key = $maharasubmission->get_config_default('key');
+$secret = $maharasubmission->get_config_default('secret');
 
 $parms = lti_sign_parameters($requestparams, $endpoint, "POST", $key, $secret);
-$debuglaunch = mahara_assignsubmission_get_config($cm->instance, 'debug');
+$debuglaunch = $maharasubmission->get_config_default('debug');
 if ($debuglaunch) {
     $parms['ext_submit'] = 'Launch';
 }
@@ -106,25 +108,3 @@ $endpointparams = $endpointurl->params();
 $content = lti_post_launch_html($parms, $endpoint, $debuglaunch);
 
 echo $content;
-
-/**
- * Get config.
- *
- * @param int $id Assignment ID.
- * @param string $setting Setting name.
- *
- * @return mixed
- */
-function mahara_assignsubmission_get_config ($id, $setting) {
-    global $DB;
-
-    $dbparams = array('assignment' => $id,
-                      'plugin' => 'maharaws',
-                      'subtype' => 'assignsubmission',
-                      'name' => $setting);
-    $result = $DB->get_record('assign_plugin_config', $dbparams, '*', IGNORE_MISSING);
-    if ($result) {
-        return $result->value;
-    }
-    return false;
-}

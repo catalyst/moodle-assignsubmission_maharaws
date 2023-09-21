@@ -332,7 +332,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                              $secret);
         $data = json_decode($content, true);
         if (empty($data)) {
-            throw new Exception("No JSON was returned in response from Mahara url:".$url);
+            return $data;
         }
 
         if (isset($data['error']) && $data['error'] == true ) {
@@ -1304,15 +1304,20 @@ class assign_submission_maharaws extends assign_submission_plugin {
      * @return string
      */
     public function get_config_default($config) {
-        if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials'))) {
+        // Some vars can be set at the site level.
+        $sitelevelvars = ['url', 'key', 'secret'];
+        if (in_array($config, $sitelevelvars) && !empty(get_config('assignsubmission_maharaws', 'force_global_credentials'))) {
             return trim(get_config('assignsubmission_maharaws', $config));
         } else {
             // Check if this is set at activity level.
             if (!empty($this->get_config($config))) {
                 return trim($this->get_config($config));
             }
-            // Return site default. (if not set at activity level).
-            return trim(get_config('assignsubmission_maharaws', $config));
+            if (in_array($config, $sitelevelvars)) {
+                // Return site default. (if not set at activity level).
+                return trim(get_config('assignsubmission_maharaws', $config));
+            }
         }
+        return false;
     }
 }

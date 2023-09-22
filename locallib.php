@@ -355,7 +355,6 @@ class assign_submission_maharaws extends assign_submission_plugin {
         global $DB, $PAGE, $CFG;
 
         $PAGE->requires->js('/mod/assign/submission/maharaws/js/popup.js');
-        $PAGE->requires->js('/mod/assign/submission/maharaws/js/filter.js');
         // Getting submission.
         if ($submission) {
             $maharasubmission = $this->get_mahara_submission($submission->id);
@@ -471,10 +470,6 @@ class assign_submission_maharaws extends assign_submission_plugin {
             $mform->addElement('radio', 'viewid', '', get_string('noneselected', 'assignsubmission_maharaws'), 'none');
             $mform->setType('viewid', PARAM_ALPHANUM);
             $mform->setDefault('viewid', 'none');
-
-            $mform->addElement('text', 'search', get_string('search'));
-            $mform->setType('search', PARAM_RAW);
-            $mform->addElement('html', '<hr/><br/>');
 
             if (count($views['data'])) {
                 $mform->addElement('static', '',

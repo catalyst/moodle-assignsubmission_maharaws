@@ -1299,14 +1299,22 @@ class assign_submission_maharaws extends assign_submission_plugin {
      * @return string
      */
     public function get_config_default($config) {
+        global $DB;
         // Some vars can be set at the site level.
         $sitelevelvars = ['url', 'key', 'secret'];
         if (in_array($config, $sitelevelvars) && !empty(get_config('assignsubmission_maharaws', 'force_global_credentials'))) {
             return trim(get_config('assignsubmission_maharaws', $config));
         } else {
             // Check if this is set at activity level.
-            if (!empty($this->get_config($config))) {
-                return trim($this->get_config($config));
+            // We can't use $this->get_config beacuase the settings aren't stored quite in a standard way.
+            $assignment = $this->assignment->get_instance();
+            $dbparams = array('assignment' => $assignment->id,
+                      'plugin' => 'maharaws',
+                      'subtype' => 'assignsubmission',
+                      'name' => $config);
+            $result = $DB->get_record('assign_plugin_config', $dbparams, '*', IGNORE_MISSING);
+            if ($result) {
+                return trim($result->value);
             }
             if (in_array($config, $sitelevelvars)) {
                 // Return site default. (if not set at activity level).

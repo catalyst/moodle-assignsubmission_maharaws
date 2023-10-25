@@ -1307,14 +1307,16 @@ class assign_submission_maharaws extends assign_submission_plugin {
         } else {
             // Check if this is set at activity level.
             // We can't use $this->get_config beacuase the settings aren't stored quite in a standard way.
-            $assignment = $this->assignment->get_instance();
-            $dbparams = array('assignment' => $assignment->id,
-                      'plugin' => 'maharaws',
-                      'subtype' => 'assignsubmission',
-                      'name' => $config);
-            $result = $DB->get_record('assign_plugin_config', $dbparams, '*', IGNORE_MISSING);
-            if ($result) {
-                return trim($result->value);
+            if ($this->assignment->has_instance()) {
+                $assignment = $this->assignment->get_instance();
+                $dbparams = array('assignment' => $assignment->id,
+                          'plugin' => 'maharaws',
+                          'subtype' => 'assignsubmission',
+                          'name' => $config);
+                $result = $DB->get_record('assign_plugin_config', $dbparams, '*', IGNORE_MISSING);
+                if ($result) {
+                    return trim($result->value);
+                }
             }
             if (in_array($config, $sitelevelvars)) {
                 // Return site default. (if not set at activity level).

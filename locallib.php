@@ -118,6 +118,23 @@ class assign_submission_maharaws extends assign_submission_plugin {
             }
 
             if ($this->can_configure()) {
+                // LTI Version field
+                $options = array(
+                    LTI_VERSION_1 => get_string('oauthsecurity', 'lti'),
+                    LTI_VERSION_1P3 => get_string('jwtsecurity', 'lti'),
+                );
+                $defaultval = !empty($this->get_config_default('ltiversion')) ? $this->get_config_default('ltiversion') : LTI_VERSION_1;
+                $mform->addElement(
+                    'select',
+                    'assignsubmission_maharaws_ltiversion',
+                    get_string('ltiversion', 'lti'),
+                    $options
+                );
+                $mform->setDefault('assignsubmission_maharaws_ltiversion', $defaultval);
+                $mform->setType('assignsubmission_maharaws_ltiversion', PARAM_TEXT);
+                $mform->addHelpButton('assignsubmission_maharaws_ltiversion', 'ltiversion', 'lti');
+                $mform->hideIf('assignsubmission_maharaws_ltiversion', 'assignsubmission_maharaws_enabled', 'notchecked');
+                // LTI 1.1 oAuth key field
                 $mform->addElement(
                     'text',
                     'assignsubmission_maharaws_key',
@@ -130,7 +147,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 }
                 $mform->addHelpButton('assignsubmission_maharaws_key', 'key', 'assignsubmission_maharaws');
                 $mform->hideIf('assignsubmission_maharaws_key', 'assignsubmission_maharaws_enabled', 'notchecked');
-
+                $mform->hideIf('assignsubmission_maharaws_key', 'assignsubmission_maharaws_ltiversion', 'eq', LTI_VERSION_1P3);
+                // LTI 1.1 oAuth secret field
                 $mform->addElement(
                     'password',
                     'assignsubmission_maharaws_secret',
@@ -144,6 +162,76 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
                 $mform->addHelpButton('assignsubmission_maharaws_secret', 'secret', 'assignsubmission_maharaws');
                 $mform->hideIf('assignsubmission_maharaws_secret', 'assignsubmission_maharaws_enabled', 'notchecked');
+                $mform->hideIf('assignsubmission_maharaws_secret', 'assignsubmission_maharaws_ltiversion', 'eq', LTI_VERSION_1P3);
+                // LTI 1.3 keytype field
+                $keyoptions = [
+                    LTI_RSA_KEY => get_string('keytype_rsa', 'lti'),
+                    LTI_JWK_KEYSET => get_string('keytype_keyset', 'lti'),
+                ];
+                $defaultval = !empty($this->get_config_default('keytype')) ? $this->get_config_default('keytype') : LTI_JWK_KEYSET;
+                $mform->addElement(
+                    'select',
+                    'assignsubmission_maharaws_keytype',
+                    get_string('keytype', 'lti'),
+                    $keyoptions
+                );
+                $mform->setDefault('assignsubmission_maharaws_keytype', $defaultval);
+                $mform->setType('assignsubmission_maharaws_keytype', PARAM_TEXT);
+                $mform->addHelpButton('assignsubmission_maharaws_keytype', 'keytype', 'lti');
+                $mform->hideIf('assignsubmission_maharaws_keytype', 'assignsubmission_maharaws_ltiversion', 'neq', LTI_VERSION_1P3);
+                // LTI 1.3 RSA key -> publickey field
+                $mform->addElement('textarea', 'assignsubmission_maharaws_publickey', get_string('publickey', 'lti'), ['rows' => 8, 'cols' => 60]);
+                if (!empty($this->get_config_default('publickey'))) {
+                    $mform->setDefault('assignsubmission_maharaws_publickey', $this->get_config_default('publickey'));
+                }
+                $mform->setType('assignsubmission_maharaws_publickey', PARAM_TEXT);
+                $mform->addHelpButton('assignsubmission_maharaws_publickey', 'publickey', 'lti');
+                $mform->hideIf('assignsubmission_maharaws_publickey', 'assignsubmission_maharaws_keytype', 'neq', LTI_RSA_KEY);
+                $mform->hideIf('assignsubmission_maharaws_publickey', 'assignsubmission_maharaws_ltiversion', 'neq', LTI_VERSION_1P3);
+                $mform->setForceLtr('assignsubmission_maharaws_publickey');
+                if (!empty($this->get_config_default('publickey'))) {
+                    $mform->setDefault('assignsubmission_maharaws_publickey', $this->get_config_default('publickey'));
+                }
+                // LTI 1.3 Client ID field
+                if (!empty($this->get_config_default('clientid'))) {
+                    $mform->addElement('text', 'assignsubmission_maharaws_clientid_disabled', get_string('clientidadmin', 'lti'));
+                    $mform->setDefault('assignsubmission_maharaws_clientid_disabled', $this->get_config_default('clientid'));
+                    $mform->setType('assignsubmission_maharaws_clientid_disabled', PARAM_TEXT);
+                    $mform->addHelpButton('assignsubmission_maharaws_clientid_disabled', 'clientidadmin', 'lti');
+                    $mform->hideIf('assignsubmission_maharaws_clientid_disabled', 'assignsubmission_maharaws_ltiversion', 'neq', LTI_VERSION_1P3);
+                    $mform->disabledIf('assignsubmission_maharaws_clientid_disabled', null);
+                    $mform->addElement('hidden', 'assignsubmission_maharaws_clientid');
+                    $mform->setDefault('assignsubmission_maharaws_clientid', $this->get_config_default('clientid'));
+                    $mform->setType('assignsubmission_maharaws_clientid', PARAM_TEXT);
+                }
+                // LTI 1.3 keyset field
+                $mform->addElement('text', 'assignsubmission_maharaws_publickeyset', get_string('publickeyset', 'lti'), ['size' => '64']);
+                if (!empty($this->get_config_default('publickeyset'))) {
+                    $mform->setDefault('assignsubmission_maharaws_publickeyset', $this->get_config_default('publickeyset'));
+                }
+                $mform->setType('assignsubmission_maharaws_publickeyset', PARAM_TEXT);
+                $mform->addHelpButton('lti_publickeyset', 'publickeyset', 'lti');
+                $mform->hideIf('assignsubmission_maharaws_publickeyset', 'lti_keytype', 'neq', LTI_JWK_KEYSET);
+                $mform->hideIf('assignsubmission_maharaws_publickeyset', 'assignsubmission_maharaws_ltiversion', 'neq', LTI_VERSION_1P3);
+                $mform->setForceLtr('assignsubmission_maharaws_publickeyset');
+                // LTI 1.3 initiate login field
+                $mform->addElement('text', 'assignsubmission_maharaws_initiatelogin', get_string('initiatelogin', 'lti'), array('size' => '64'));
+                if (!empty($this->get_config_default('initiatelogin'))) {
+                    $mform->setDefault('assignsubmission_maharaws_initiatelogin', $this->get_config_default('initiatelogin'));
+                }
+                $mform->setType('assignsubmission_maharaws_initiatelogin', PARAM_URL);
+                $mform->addHelpButton('assignsubmission_maharaws_initiatelogin', 'initiatelogin', 'lti');
+                $mform->hideIf('assignsubmission_maharaws_initiatelogin', 'assignsubmission_maharaws_ltiversion', 'neq', LTI_VERSION_1P3);
+                // LTI 1.3 redirect URI field
+                $mform->addElement('textarea', 'assignsubmission_maharaws_redirectionuris', get_string('redirectionuris', 'lti'),
+                    array('rows' => 3, 'cols' => 60));
+                if (!empty($this->get_config_default('redirectionuris'))) {
+                    $mform->setDefault('assignsubmission_maharaws_redirectionuris', $this->get_config_default('redirectionuris'));
+                }
+                $mform->setType('assignsubmission_maharaws_redirectionuris', PARAM_TEXT);
+                $mform->addHelpButton('assignsubmission_maharaws_redirectionuris', 'redirectionuris', 'lti');
+                $mform->hideIf('assignsubmission_maharaws_redirectionuris', 'assignsubmission_maharaws_ltiversion', 'neq', LTI_VERSION_1P3);
+                $mform->setForceLtr('assignsubmission_maharaws_redirectionuris');
             }
         }
 
@@ -215,9 +303,20 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 $data->assignsubmission_maharaws_archiveonrelease = 0;
             }
             if (empty(get_config('assignsubmission_maharaws', 'force_global_credentials'))) {
-                $this->set_config('url', $data->assignsubmission_maharaws_url);
+                $this->set_config('ltiversion', $data->assignsubmission_maharaws_ltiversion);
+                // LTI 1.1 options
                 $this->set_config('key', $data->assignsubmission_maharaws_key);
                 $this->set_config('secret', $data->assignsubmission_maharaws_secret);
+                // LTI 1.3 options
+                if (empty($this->get_config_default('clientid'))) {
+                    $this->set_config('clientid', random_string(15));
+                }
+                $this->set_config('keytype', $data->assignsubmission_maharaws_keytype);
+                $this->set_config('publickey', $data->assignsubmission_maharaws_publickey);
+                $this->set_config('url', $data->assignsubmission_maharaws_url);
+                $this->set_config('publickeyset', $data->assignsubmission_maharaws_publickeyset);
+                $this->set_config('initiatelogin', $data->assignsubmission_maharaws_initiatelogin);
+                $this->set_config('redirectionuris', $data->assignsubmission_maharaws_redirectionuris);
             }
             $this->set_config('debug', false);
             $this->set_config('remoteuser', false);

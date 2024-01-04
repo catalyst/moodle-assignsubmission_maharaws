@@ -42,6 +42,7 @@ $string['errorinvalidurl'] = 'Error when connecting to Mahara web services. {$a}
 $string['errorrequest'] = 'Attempt to send OAuth request resulted in error: {$a}';
 $string['errorvieworcollectionalreadysubmitted'] = 'The selected page or collection could not be submitted. Please choose another.';
 $string['errorwsrequest'] = 'Attempt to send Mahara request resulted in error: {$a}';
+$string['errorwsrequestnolti'] = 'No LTI or LTI Advantage connection in the external Mahara site.';
 $string['eventassessableuploaded'] = 'A page or collection has been submitted.';
 $string['forceglobalcredentials'] = 'Force global credentials';
 $string['forceglobalcredentials_help'] = 'Always use these credentials to connect to Mahara';

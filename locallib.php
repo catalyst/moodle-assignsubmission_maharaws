@@ -532,16 +532,21 @@ class assign_submission_maharaws extends assign_submission_plugin {
             $result = $this->webservice_call("mahara_submission_get_views_for_user",
                                       array('users' => array( array($field => $username,
                                                                     'query' => $query))));
-            $result = array_pop($result);
-            $result['views']['ids'] = array_map('intval', explode(',', $result['views']['ids']));
+            if (!empty($result)) {
+                $result = array_pop($result);
+                $result['views']['ids'] = array_map('intval', explode(',', $result['views']['ids']));
 
-            // Overwrite url with full URL.
-            foreach ($result['views']['data'] as $key => $value) {
-                $result['views']['data'][$key]['url'] = $result['views']['data'][$key]['fullurl'];
+                // Overwrite url with full URL.
+                foreach ($result['views']['data'] as $key => $value) {
+                    $result['views']['data'][$key]['url'] = $result['views']['data'][$key]['fullurl'];
+                }
+                foreach ($result['views']['collections']['data'] as $key => $value) {
+                    $result['views']['collections']['data'][$key]['url'] = $result['views']['collections']['data'][$key]['fullurl'];
+                }
+            } else {
+                $result['views'] = null;
             }
-            foreach ($result['views']['collections']['data'] as $key => $value) {
-                $result['views']['collections']['data'][$key]['url'] = $result['views']['collections']['data'][$key]['fullurl'];
-            }
+
         } catch (Exception $e) {
             throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());
         }

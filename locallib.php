@@ -458,7 +458,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $remotehost->name = $remotehost->sitename;
 
         // See if any of views are already in use, we will remove them from select.
-        if (count($viewids) || count($views['collections']['data'])) {
+        if (!empty($viewids) || !empty($views['collections']['data'])) {
             $mform->addElement(
                 'static',
                 '',
@@ -471,7 +471,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             $mform->setType('viewid', PARAM_ALPHANUM);
             $mform->setDefault('viewid', 'none');
 
-            if (count($views['data'])) {
+            if (!empty($views['data'])) {
                 $mform->addElement('static', '',
                     get_string('viewsby', 'assignsubmission_maharaws', $views['displayname'])
                 );
@@ -482,7 +482,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     $mform->addElement('radio', 'viewid', '', $anchor, 'v' . $view['id']);
                 }
             }
-            if (count($views['collections']['data'])) {
+            if (!empty($views['collections']['data'])) {
                 $mform->addElement('static', 'collection_by',
                     get_string('collectionsby', 'assignsubmission_maharaws', $views['displayname'])
                 );

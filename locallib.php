@@ -1368,4 +1368,33 @@ class assign_submission_maharaws extends assign_submission_plugin {
         }
         return false;
     }
+
+    /**
+     * Helper function to call webservice function with specified parameters.
+     *
+     * @param array $data
+     * @param array $records
+     * @return array
+     */
+    function run_get_views_by_id(array $data, array $records): array {
+        $items = [];
+        foreach ($records as $record) {
+            $items[] = [
+                'id'           => $record->id,
+                'viewid'       => $record->viewid,
+                'iscollection' => $record->iscollection
+            ];
+        }
+        try{
+            $returned = $this->webservice_call("mahara_submission_get_views_by_id", ['items' => $items]);
+        } catch (Exception $e) {
+            throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());
+        }
+        $returned['ids'] = array_map('intval', explode(',', $returned['ids']));
+        for ($i = 0; $i<count($returned['ids']); $i++) {
+            $data[$returned['ids'][$i]] = $returned['data'][$i];
+            $data[$returned['ids'][$i]]['endpointurl'] = trim(get_config('assignsubmission_maharaws', 'url'));
+        }
+        return $data;
+    }
 }

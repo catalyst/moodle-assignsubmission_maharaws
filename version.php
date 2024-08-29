@@ -25,8 +25,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2024091300;
-$plugin->release   = 2024091300;
+$plugin->version   = 2024081600;
+//replace version with the below to run the mnet import
+//$plugin->version   = 2024081601;
+$plugin->release   = 2023110900;
 $plugin->requires  = 2020061500;
 $plugin->component = 'assignsubmission_maharaws';
 $plugin->supported = [39, 403];  // Available as of Moodle 3.9.0 or later.

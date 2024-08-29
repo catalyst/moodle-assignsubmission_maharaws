@@ -25,7 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2023110900;
+$plugin->version   = 2024081600;
+//replace version with the below to run the mnet import
+//$plugin->version   = 2024081601;
 $plugin->release   = 2023110900;
 $plugin->requires  = 2020061500;
 $plugin->component = 'assignsubmission_maharaws';

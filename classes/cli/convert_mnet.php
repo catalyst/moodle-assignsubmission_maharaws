@@ -1,7 +1,30 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * This file contains a cli script for converting mnet submissionst to lti
+ *
+ * @package    assignsubmission_maharaws
+ * @copyright  2024 Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 define('CLI_SCRIPT', true);
 
-// Assume this file is located in moodle/mod/assign/submission/maharaws/classes/cli/
+// Assume this file is located in moodle/mod/assign/submission/maharaws/classes/cli/ .
 require(__DIR__.'/../../../../../../config.php');
 require_once($CFG->libdir.'/clilib.php');
 require_once($CFG->dirroot.'/mod/assign/locallib.php');
@@ -13,13 +36,13 @@ $wsplugin = $assign->get_submission_plugin_by_type('maharaws');
 $data = [];
 $records = $DB->get_records('assignsubmission_mahara');
 if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials'))) {
-    // if force globals, proceed with whole table.
+    // If force globals, proceed with whole table.
     $data = $wsplugin->run_get_views_by_id($data, $records);
 } else {
     set_config('force_global_credentials', '1', 'assignsubmission_maharaws');
-    // if globals available, save in a variable
+    // If globals available, save in a variable.
     $globals = [];
-    foreach (['url','key','secret'] as $config) {
+    foreach (['url', 'key', 'secret'] as $config) {
         if (isset($globals)) {
             if ($result = get_config('assignsubmission_maharaws', $config)) {
                 $globals[$config] = trim($result);
@@ -28,7 +51,7 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
             }
         }
     }
-    // arrange table records in assignment clusters
+    // Arrange table records in assignment clusters.
     $assignments = [];
     foreach ($records as $record) {
         $assignments[$record->assignment][] = (object)[
@@ -38,7 +61,7 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
         ];
     }
     foreach ($assignments as $assid => $assignment) {
-        // get maharaws config for this assignment
+        // Get maharaws config for this assignment.
         $locals = true;
         $dbparams = [
             'assignment' => $assid,
@@ -47,7 +70,7 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
         ];
         if ($result = $DB->get_records('assign_plugin_config', $dbparams)) {
             $resultarray = [];
-            foreach($result as $resultitem) {
+            foreach ($result as $resultitem) {
                 $resultarray[$resultitem->name] = trim($resultitem->value);
             }
             if (empty($resultarray['enabled'])) {
@@ -57,7 +80,7 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
                 });
                 continue;
             }
-            foreach (['url','key','secret'] as $config) {
+            foreach (['url', 'key', 'secret'] as $config) {
                 if (empty($resultarray[$config])) {
                     unset($locals);
                 }
@@ -66,18 +89,18 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
             unset($locals);
         }
         if (isset($locals)) {
-            foreach (['url','key','secret'] as $config) {
+            foreach (['url', 'key', 'secret'] as $config) {
                 set_config($config, $resultarray[$config], 'assignsubmission_maharaws');
             }
             $data = $wsplugin->run_get_views_by_id($data, $assignment);
-            foreach (['url','key','secret'] as $config) {
+            foreach (['url', 'key', 'secret'] as $config) {
                 if (!empty($globals)) {
                     set_config($config, $globals[$config], 'assignsubmission_maharaws');
                 } else {
                     unset_config($config, 'assignsubmission_maharaws');
                 }
             }
-        } elseif (isset($globals)) {
+        } else if (isset($globals)) {
             $data = $wsplugin->run_get_views_by_id($data, $assignment);
         } else {
             mtrace("no maharaws endpoint configured for assignment {$assid}: skipping");
@@ -114,7 +137,7 @@ foreach ($records as $record) {
     } else {
         switch ($dataitem['complexity']) {
             case 0:
-                //simple collection
+                // Simple collection.
                 if ($todb->viewstatus == assign_submission_mahara::STATUS_SELECTED) {
                     $urlstring = '/view/view.php?id=' . $dataitem['viewid'];
                     $todb->viewurl = $dataitem['endpointurl'] . $urlstring;
@@ -123,7 +146,7 @@ foreach ($records as $record) {
                 }
                 break;
             case 1:
-                //progresscompletion
+                // Progresscompletion.
                 if ($todb->viewstatus == assign_submission_mahara::STATUS_SELECTED) {
                     $urlstring = '/collection/progresscompletion.php?id=' . $todb->viewid;
                     $todb->viewurl = $dataitem['endpointurl'] . $urlstring;
@@ -132,7 +155,7 @@ foreach ($records as $record) {
                 }
                 break;
             case 2:
-                //smartevidence
+                // Smartevidence.
                 if ($todb->viewstatus == assign_submission_mahara::STATUS_SELECTED) {
                     $urlstring = '/module/framework/matrix.php?id=' . $todb->viewid;
                     $todb->viewurl = $dataitem['endpointurl'] . $urlstring;

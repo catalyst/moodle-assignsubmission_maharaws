@@ -162,9 +162,7 @@ To manually run the upgrade step which converts applicable submissions from [the
     3. for each course assignment whose submissions you wish to convert:
         1. disable _Mahara portfolio_ submission type.
         2. enable _Mahara_ submission type and input the relevant LTI credentials.
-3. uncomment version **2024081601** in version.php
-4. uncomment the version **2024081601** upgrade step in db/upgrade.php
-5. run the Moodle site upgrade
+3. run the cli script in classes/cli/convert_mnet.php
 
 Bugs and improvements?
 ------------------------

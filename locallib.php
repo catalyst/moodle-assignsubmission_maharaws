@@ -477,9 +477,20 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 );
 
                 foreach ($views['data'] as $view) {
-                    $viewurl = "/view/view.php?id=" . $view['id'];
-                    $anchor = $this->get_preview_url($view['title'], $viewurl, strip_tags($view['description']));
-                    $mform->addElement('radio', 'viewid', '', $anchor, 'v' . $view['id']);
+                    // If the view (page) hasn't already been submitted, add it to the options for selection.
+                    if ($view['submissionoriginal'] == 0) {
+                        $viewurl = "/view/view.php?id=" . $view['id'];
+                        $anchor = $this->get_preview_url($view['title'], $viewurl, strip_tags($view['description']));
+                        $mform->addElement('radio', 'viewid', '', $anchor, 'v' . $view['id']);
+                    }
+                    if ($maharasubmission && $view['id'] == $maharasubmission->viewid) {
+                        $currentpagesubmitted = $mform->createElement('static', 'currentsubmission',
+                            get_string('currentsubmitted', 'assignsubmission_maharaws', 'page'), $view['displaytitle']);
+                    }
+                }
+
+                if (!empty($currentpagesubmitted)) {
+                    $mform->addElement($currentpagesubmitted);
                 }
             }
             if (!empty($views['collections']['data'])) {
@@ -487,9 +498,21 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     get_string('collectionsby', 'assignsubmission_maharaws', $views['displayname'])
                 );
                 foreach ($views['collections']['data'] as $coll) {
-                    $anchor = $this->get_preview_url($coll['name'], $coll['url'], strip_tags($coll['description']));
-                    $mform->addElement('radio', 'viewid', '', $anchor, 'c' . $coll['id']);
+                    // If the collection hasn't already been submitted, add it to the options for selection.
+                    if ($coll['submissionoriginal'] == 0) {
+                        $anchor = $this->get_preview_url($coll['name'], $coll['url'], strip_tags($coll['description']));
+                        $mform->addElement('radio', 'viewid', '', $anchor, 'c' . $coll['id']);
+                    }
+
+                    if ($maharasubmission && $coll['id'] == $maharasubmission->viewid) {
+                        $currentcollsubmitted = $mform->createElement('static', 'currentsubmission',
+                           get_string('currentsubmitted', 'assignsubmission_maharaws', 'collection'), $coll['name']);
+                    }
                 }
+                if (!empty($currentcollsubmitted)) {
+                    $mform->addElement($currentcollsubmitted);
+                }
+
             }
             if (!empty($maharasubmission)) {
                 if ($maharasubmission->iscollection) {

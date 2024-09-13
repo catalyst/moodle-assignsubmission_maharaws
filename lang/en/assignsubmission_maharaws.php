@@ -25,6 +25,7 @@
 $string['assign_submission_maharaws_name'] = 'Mahara Assignment submission (web services)';
 $string['assign_submission_maharaws_description'] = 'Mahara functions used in Mahara assignment submission plugin.<br />Publishing this service on a Moodle site has no effect. Subscribe to this service if you want to be able to use assignments with {$a}.<br />';
 $string['collectionsby'] = 'Collections by {$a}';
+$string['currentsubmitted'] = 'Current submitted {$a}';
 $string['debug_help'] = 'Debug option to interupt the OAuth SSO login jump so parameters can be inspected';
 $string['debug'] = 'Debug OAuth';
 $string['defaultlockpages_help'] = 'Default setting to use for the "{$a}" setting in new Mahara assignments.';

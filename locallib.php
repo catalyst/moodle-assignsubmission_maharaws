@@ -219,12 +219,21 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 $this->set_config('key', $data->assignsubmission_maharaws_key);
                 $this->set_config('secret', $data->assignsubmission_maharaws_secret);
             }
-            $this->set_config('debug', false);
-            $this->set_config('remoteuser', false);
+
             $this->set_config('lock', $data->assignsubmission_maharaws_lockpages);
-            $this->set_config('username_attribute', 'email');
-            $this->set_config('archiveonrelease', $data->assignsubmission_maharaws_archiveonrelease);
+        } else {
+            // Set to existing config or default value for users that cannot see lock element.
+            $locked = $this->get_config('lock');
+            if ($locked === false) {
+                $locked = get_config('assignsubmission_maharaws', 'lock');
+            }
+            $this->set_config('lock', $locked);
         }
+
+        $this->set_config('debug', false);
+        $this->set_config('remoteuser', false);
+        $this->set_config('username_attribute', 'email');
+        $this->set_config('archiveonrelease', $data->assignsubmission_maharaws_archiveonrelease);
 
         // Test Mahara connection.
         try {

@@ -237,6 +237,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         // Test Mahara connection.
         try {
+            // Skip webservice call if running unit tests.
+            if ((defined('PHPUNIT_TEST') || PHPUNIT_TEST)) {
+                return true;
+            }
+
             $data = $this->webservice_call("mahara_user_get_extended_context", array());
             $funcs = array();
 

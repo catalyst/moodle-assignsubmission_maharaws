@@ -950,7 +950,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         $maharasubmission = $this->get_mahara_submission($submission->id);
         // Lock view on Mahara side as it has been submitted for assessment.
-        if (!$response = $this->submit_view($submission, $maharasubmission->viewid, $maharasubmission->iscollection, $submission->userid)) {
+        if (!$response = $this->submit_view($submission, $maharasubmission->viewid, $maharasubmission->iscollection,
+          $submission->userid)) {
             throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
         }
         $apilevel = $this->process_apilevel($response['apilevel']);

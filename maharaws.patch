@@ -1,0 +1,153 @@
+diff --git a/htdocs/auth/webservice/version.php b/htdocs/auth/webservice/version.php
+index daf3fb64dd..cbc02e0765 100644
+--- a/htdocs/auth/webservice/version.php
++++ b/htdocs/auth/webservice/version.php
+@@ -12,7 +12,7 @@
+ defined('INTERNAL') || die();
+ 
+ $config = new stdClass();
+-$config->version = 2021121600;
++$config->version = 2024081600;
+ $config->release = '2.0.7';
+ $config->requires_config = 0;
+ $config->requires_parent = 0;
+diff --git a/htdocs/module/lti/webservice/services.php b/htdocs/module/lti/webservice/services.php
+index d2940470b0..109c948825 100644
+--- a/htdocs/module/lti/webservice/services.php
++++ b/htdocs/module/lti/webservice/services.php
+@@ -30,6 +30,7 @@ $services = array(
+         'functions' => [
+             'mahara_user_get_extended_context',
+             'mahara_submission_get_views_for_user',
++            'mahara_submission_get_views_by_id',
+             'mahara_submission_submit_view_for_assessment',
+             'mahara_submission_release_submitted_view',
+             'module_lti_launch',
+diff --git a/htdocs/webservice/functions/mahara_view_external.php b/htdocs/webservice/functions/mahara_view_external.php
+index fc146d48cc..57bb1cfea2 100644
+--- a/htdocs/webservice/functions/mahara_view_external.php
++++ b/htdocs/webservice/functions/mahara_view_external.php
+@@ -910,4 +910,104 @@ class mahara_view_external extends external_api {
+             )
+         );
+     }
++
++    /**
++     * Webservice parameter definition for input of get_views_by_id method
++     *
++     * Returns description of method parameters
++     *
++     * @return external_function_parameters
++     */
++    public static function get_views_by_id_parameters() {
++        return new external_function_parameters([
++            'items' => new external_multiple_structure(
++                new external_single_structure([
++                    'id'           => new external_value(PARAM_INT, get_string('viewid', WEBSERVICE_LANG)),
++                    'viewid'       => new external_value(PARAM_NUMBER, get_string('viewid', WEBSERVICE_LANG)),
++                    'iscollection' => new external_value(PARAM_BOOL, get_string('iscollection', WEBSERVICE_LANG))
++                ])
++            )
++        ]);
++    }
++
++    /**
++     * Webservice parameter definition for output of get_views_by_id method
++     *
++     * Returns description of method result value
++     *
++     * @return external_description
++     */
++    public static function get_views_by_id_returns() {
++        return new external_single_structure([
++            'ids'        => new external_value(PARAM_TEXT, 'comma-delimited list with ids of the submission record in the LMS'),
++            'data'       => new external_multiple_structure(
++                new external_single_structure([
++                    'owner'        => new external_value(PARAM_TEXT,   get_string('portfolioownerusername', WEBSERVICE_LANG)),
++                    'urlid'        => new external_value(PARAM_TEXT,   get_string('viewurldescription', 'view')),
++                    'complexity'   => new external_value(PARAM_NUMBER, '0:coll-simple;1:coll-progress;2:coll-framework;3:view'),
++                    'viewid'       => new external_value(PARAM_NUMBER, get_string('viewid', WEBSERVICE_LANG))
++                ])
++            )
++        ]);
++    }
++
++    /**
++     * Get portfolio pages or collections by id
++     *
++     * @param array $items array of view or collection ids
++     * @return array An array of arrays describing views and collections
++     */
++    public static function get_views_by_id($items) {
++        $params = self::validate_parameters(self::get_views_by_id_parameters(), ['items' => $items]);
++        $returned = [
++            'ids'  => '',
++            'data' => []
++        ];
++        if (empty($params['items'])) {
++            return $returned;
++        }
++        foreach ($params['items'] as $item) {
++            $viewid = $item['viewid'];
++            if (empty($viewid)) {
++                log_debug("{$item['id']} is missing viewid: skipping");
++                continue;
++            }
++            $owner = null;
++            $urlid = null;
++            $complexity = 0;
++            if (!empty($item['iscollection'])) {
++                log_debug("{$item['id']} is a collection");
++                require_once('collection.php');
++                $collection = new Collection($viewid);
++
++                $owner = '';
++                $urlid = '';
++                $complexity += $collection->get('progresscompletion') ? 1 : 0;
++                $complexity += $collection->get('framework') ? 2 : 0;
++                $viewid = current($collection->get_viewids());
++            } else {
++                log_debug("{$item['id']} is a view");
++                require_once('view.php');
++                $view = new View($viewid);
++
++                $viewid = 0;
++                $owner = $view->get_owner_object()->get('username');
++                $urlid = $view->get('urlid');
++                $complexity = 3;
++            }
++            $data = array(
++                'viewid'     => $viewid,
++                'owner'      => $owner,
++                'urlid'      => $urlid,
++                'complexity' => $complexity
++            );
++            if(!empty($returned['ids'])) {
++                $returned['ids'] .= ',';
++            }
++            $returned['ids'] .= $item['id'];
++            $returned['data'][]= $data;
++        }
++        log_debug('get_views_by_id Results: '.var_export($returned, true));
++        return $returned;
++    }
+ }
+diff --git a/htdocs/webservice/services.php b/htdocs/webservice/services.php
+index 785f6d0a52..e1c70864fb 100644
+--- a/htdocs/webservice/services.php
++++ b/htdocs/webservice/services.php
+@@ -248,6 +248,14 @@ $functions = array(
+         'type'        => 'read',
+     ),
+ 
++    'mahara_submission_get_views_by_id' => array(
++        'classname'   => 'mahara_view_external',
++        'methodname'  => 'get_views_by_id',
++        'classpath'   => WEBSERVICE_DIRECTORY,
++        'description' => 'Get views and collections by id',
++        'type'        => 'read',
++    ),
++
+     'mahara_submission_submit_view_for_assessment' => array(
+         'classname'   => 'mahara_view_external',
+         'methodname'  => 'submit_view_for_assessment',

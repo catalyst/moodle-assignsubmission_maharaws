@@ -148,6 +148,22 @@ If you need help, try the [Moodle-Mahara Integration forum](https://mahara.org/i
 
 Submitting of group portfolios is not yet supported.
 
+Convert MNet submissions
+------------------------
+
+To manually run the upgrade step which converts applicable submissions from [the original MNet plugin](https://github.com/MaharaProject/moodle-assignsubmission_mahara):
+
+1. for each Mahara instance you wish to convert submissions from:
+    1. apply the patch (maharaws.patch).
+    2. ensure a functional LTI connection exists between the instance and your Moodle site.
+2. if using multiple Mahara endpoints:
+    1. uncheck the assignsubmission_maharaws config setting _force_global_credentials_
+    2. clear the global credential fields (url, key, secret).
+    3. for each course assignment whose submissions you wish to convert:
+        1. disable _Mahara portfolio_ submission type.
+        2. enable _Mahara_ submission type and input the relevant LTI credentials.
+3. run the cli script in classes/cli/convert_mnet.php
+
 Bugs and improvements?
 ------------------------
 

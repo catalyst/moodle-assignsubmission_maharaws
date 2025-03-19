@@ -163,6 +163,7 @@ To manually run the upgrade step which converts applicable submissions from [the
         1. disable _Mahara portfolio_ submission type.
         2. enable _Mahara_ submission type and input the relevant LTI credentials.
 3. run the cli script in classes/cli/convert_mnet.php
+4. Remove the old Mahara MNet assignment submission plugin from the code base.
 
 Bugs and improvements?
 ------------------------

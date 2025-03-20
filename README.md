@@ -25,9 +25,10 @@ grading has finished.
 Supported Branches
 --------
 
-| Moodle version     | Mahara version  | Branch  |
-| ----------------- | ---------------- | ----    |
-| Moodle 3.9+       | Mahara 22.04*    | main    |
+| Moodle version    | Mahara version  | Branch  |
+| ----------------- | --------------- | ------- |
+| Moodle 3.9+       | Mahara 22.04*   | main    |
+| Moodle 3.9+       | Mahara 24.04*   | main    |
 
 * Note: This plugin may work in some older unsupported Mahara versions as well, however we do not include these in our testing processes.
 

@@ -155,7 +155,7 @@ Convert MNet submissions
 To manually run the upgrade step which converts applicable submissions from [the original MNet plugin](https://github.com/MaharaProject/moodle-assignsubmission_mahara):
 
 1. for each Mahara instance you wish to convert submissions from:
-    1. apply the patch (maharaws.patch).
+    1. Make sure your Mahara instance is running at least 24.04.10, 25.04.0 or a higher version.
     2. ensure a functional LTI connection exists between the instance and your Moodle site.
 2. if using multiple Mahara endpoints:
     1. uncheck the assignsubmission_maharaws config setting _force_global_credentials_

@@ -25,9 +25,10 @@ grading has finished.
 Supported Branches
 --------
 
-| Moodle version     | Mahara version  | Branch  |
-| ----------------- | ---------------- | ----    |
-| Moodle 3.9+       | Mahara 22.04*    | main    |
+| Moodle version    | Mahara version  | Branch  |
+| ----------------- | --------------- | ------- |
+| Moodle 3.9+       | Mahara 22.04*   | main    |
+| Moodle 3.9+       | Mahara 24.04*   | main    |
 
 * Note: This plugin may work in some older unsupported Mahara versions as well, however we do not include these in our testing processes.
 
@@ -147,6 +148,23 @@ If the locking setting permits 'Unlock after grading':
 If you need help, try the [Moodle-Mahara Integration forum](https://mahara.org/interaction/forum/view.php?id=30)
 
 Submitting of group portfolios is not yet supported.
+
+Convert MNet submissions
+------------------------
+
+To manually run the upgrade step which converts applicable submissions from [the original MNet plugin](https://github.com/MaharaProject/moodle-assignsubmission_mahara):
+
+1. for each Mahara instance you wish to convert submissions from:
+    1. apply the patch (maharaws.patch).
+    2. ensure a functional LTI connection exists between the instance and your Moodle site.
+2. if using multiple Mahara endpoints:
+    1. uncheck the assignsubmission_maharaws config setting _force_global_credentials_
+    2. clear the global credential fields (url, key, secret).
+    3. for each course assignment whose submissions you wish to convert:
+        1. disable _Mahara portfolio_ submission type.
+        2. enable _Mahara_ submission type and input the relevant LTI credentials.
+3. run the cli script in classes/cli/convert_mnet.php
+4. Remove the old Mahara MNet assignment submission plugin from the code base.
 
 Bugs and improvements?
 ------------------------

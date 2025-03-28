@@ -122,13 +122,13 @@ foreach ($records as $record) {
     $todb->viewtitle    = $record->viewtitle;
     $todb->iscollection = $record->iscollection;
     $status = $record->viewstatus;
-    if ($status == assign_submission_mahara::STATUS_RELEASED ||
-        $status == assign_submission_mahara::STATUS_SELECTED ||
-        $status == assign_submission_mahara::STATUS_SUBMITTED) {
+    if ($status == assign_submission_maharaws::STATUS_RELEASED ||
+        $status == assign_submission_maharaws::STATUS_SELECTED ||
+        $status == assign_submission_maharaws::STATUS_SUBMITTED) {
         $todb->viewstatus = $status;
     }
     if (!$todb->iscollection) {
-        if ($todb->viewstatus == assign_submission_mahara::STATUS_SELECTED) {
+        if ($todb->viewstatus == assign_submission_maharaws::STATUS_SELECTED) {
             $urlstring = '/user/' . $dataitem['owner'] .'/'. $dataitem['urlid'];
             $todb->viewurl = $dataitem['endpointurl'] . $urlstring;
         } else {
@@ -138,7 +138,7 @@ foreach ($records as $record) {
         switch ($dataitem['complexity']) {
             case 0:
                 // Simple collection.
-                if ($todb->viewstatus == assign_submission_mahara::STATUS_SELECTED) {
+                if ($todb->viewstatus == assign_submission_maharaws::STATUS_SELECTED) {
                     $urlstring = '/view/view.php?id=' . $dataitem['viewid'];
                     $todb->viewurl = $dataitem['endpointurl'] . $urlstring;
                 } else {
@@ -147,7 +147,7 @@ foreach ($records as $record) {
                 break;
             case 1:
                 // Progresscompletion.
-                if ($todb->viewstatus == assign_submission_mahara::STATUS_SELECTED) {
+                if ($todb->viewstatus == assign_submission_maharaws::STATUS_SELECTED) {
                     $urlstring = '/collection/progresscompletion.php?id=' . $todb->viewid;
                     $todb->viewurl = $dataitem['endpointurl'] . $urlstring;
                 } else {
@@ -156,7 +156,7 @@ foreach ($records as $record) {
                 break;
             case 2:
                 // Smartevidence.
-                if ($todb->viewstatus == assign_submission_mahara::STATUS_SELECTED) {
+                if ($todb->viewstatus == assign_submission_maharaws::STATUS_SELECTED) {
                     $urlstring = '/module/framework/matrix.php?id=' . $todb->viewid;
                     $todb->viewurl = $dataitem['endpointurl'] . $urlstring;
                 } else {

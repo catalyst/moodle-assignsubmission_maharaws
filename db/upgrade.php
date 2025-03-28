@@ -71,11 +71,11 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
             }
 
             $DB->execute("update {assignsubmission_maharaws}
-                             set viewstatus='".assign_submission_mahara::STATUS_SELECTED."'
+                             set viewstatus='".assign_submission_maharaws::STATUS_SELECTED."'
                            where viewaccesskey is null");
 
             $DB->execute("update {assignsubmission_maharaws}
-                             set viewstatus='".assign_submission_mahara::STATUS_SUBMITTED."'
+                             set viewstatus='".assign_submission_maharaws::STATUS_SUBMITTED."'
                            where viewaccesskey is not null");
 
             // Define field viewaccesskey to be dropped from assignsubmission_maharaws.
@@ -146,9 +146,9 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
                 $todb->viewtitle = $page->title;
                 $todb->iscollection = 0;
                 $status = $submissiondata->status;
-                if ($status == assign_submission_mahara::STATUS_RELEASED ||
-                    $status == assign_submission_mahara::STATUS_SELECTED ||
-                    $status == assign_submission_mahara::STATUS_SUBMITTED) {
+                if ($status == assign_submission_maharaws::STATUS_RELEASED ||
+                    $status == assign_submission_maharaws::STATUS_SELECTED ||
+                    $status == assign_submission_maharaws::STATUS_SUBMITTED) {
                     $todb->status = $status;
                 }
                 $todb->status = $submissiondata->status;

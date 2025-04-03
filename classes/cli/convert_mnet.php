@@ -34,13 +34,24 @@ require_once($CFG->dirroot.'/mod/assign/submission/maharaws/locallib.php');
 $assign = new assign(null, null, null);
 $wsplugin = $assign->get_submission_plugin_by_type('maharaws');
 $data = [];
-$records = $DB->get_records('assignsubmission_mahara');
+$records = [];
+
 if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials'))) {
     // If force globals, proceed with whole table.
-    $data = $wsplugin->run_get_views_by_id($data, $records);
+    $batchsize = 40;
+    $limitfrom = 0;
+    while ($batchrecords = $DB->get_records('assignsubmission_mahara', null, '', '*', $limitfrom, $batchsize)) {
+        if (empty($batchrecords)) {
+            break;
+        }
+        $records = array_merge($records, $batchrecords);
+        $data = $wsplugin->run_get_views_by_id($data, $batchrecords);
+        $limitfrom += $batchsize;
+    }
 } else {
     set_config('force_global_credentials', '1', 'assignsubmission_maharaws');
     // If globals available, save in a variable.
+    $records = $DB->get_records('assignsubmission_mahara');
     $globals = [];
     foreach (['url', 'key', 'secret'] as $config) {
         if (isset($globals)) {

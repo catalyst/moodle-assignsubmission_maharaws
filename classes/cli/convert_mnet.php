@@ -113,6 +113,10 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
     set_config('force_global_credentials', '0', 'assignsubmission_maharaws');
 }
 foreach ($records as $record) {
+    if (!isset($data[$record->id])) {
+        mtrace("Skipping record {$record->id}: view not found in Mahara");
+        continue;
+    }
     $dataitem = $data[$record->id];
     $todb = new \stdClass();
     $todb->assignment   = $record->assignment;

@@ -36,17 +36,24 @@ $wsplugin = $assign->get_submission_plugin_by_type('maharaws');
 $data = [];
 $records = [];
 
+$totalmnetrecords = $DB->count_records("assignsubmission_mahara");
+mtrace("Retrieving data for {$totalmnetrecords} from get_views_by_id Mahara webservice");
+
 if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials'))) {
     // If force globals, proceed with whole table.
     $batchsize = 40;
     $limitfrom = 0;
+    $batchnum = 1;
+    $batchtotal = ceil($totalmnetrecords / $batchsize);
     while ($batchrecords = $DB->get_records('assignsubmission_mahara', null, '', '*', $limitfrom, $batchsize)) {
         if (empty($batchrecords)) {
             break;
         }
+        mtrace("Processing batch {$batchnum}/{$batchtotal} - Limit from: {$limitfrom}");
         $records = array_merge($records, $batchrecords);
         $data = $wsplugin->run_get_views_by_id($data, $batchrecords);
         $limitfrom += $batchsize;
+        $batchnum++;
     }
 } else {
     set_config('force_global_credentials', '1', 'assignsubmission_maharaws');
@@ -123,6 +130,8 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
     }
     set_config('force_global_credentials', '0', 'assignsubmission_maharaws');
 }
+mtrace("Finished retrieving data from get_views_by_id Mahara webservice");
+mtrace("Inserting data from previous Mahara submission plugin...");
 foreach ($records as $record) {
     if (!isset($data[$record->id])) {
         mtrace("Skipping record {$record->id}: view not found in Mahara");

@@ -176,6 +176,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
             get_string('archiveonrelease', 'assignsubmission_maharaws')
         );
 
+        $mform->hideIf('assignsubmission_maharaws_archiveonrelease', 'assignsubmission_maharaws_lockpages', 'eq', 0);
+
         if (!empty($this->get_config('archiveonrelease'))) {
             $mform->setDefault('assignsubmission_maharaws_archiveonrelease', $this->get_config('archiveonrelease'));
         } else {

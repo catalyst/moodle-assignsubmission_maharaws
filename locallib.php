@@ -808,25 +808,17 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 }
             }
 
-            // Lock submission on mahara side.
-            if (!$response = $this->submit_view($submission, $data->viewid, $iscollection, $submission->userid)) {
-                throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
-            }
-
-            // If we're not locking user pages, then immediately release the page. This will leave it unlocked,
-            // but leave the access code in place.
+            // If we're not locking user pages, we are not submitting the view, not creating copy.
+            // This will leave it unlocked, but leave the access code in place.
             // TODO: Replace this hack with something more robust. It's an oversight and a security hole, that the
             // access code remains in place in Mahara when you release the page via XML-RPC.
-            if (!$this->get_config('lock')) {
-                $apilevel = $this->process_apilevel($response['apilevel']);
-                if ($apilevel >= 3 ) {
-                    $this->release_submitted_view($response['copyid'], array(), $iscollection);
-                } else {
-                    $this->release_submitted_view($response['viewid'], array(), $iscollection);
+            if ($this->get_config('lock')) {
+                if (!$response = $this->submit_view($submission, $data->viewid, $iscollection, $submission->userid)) {
+                    throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
                 }
-                $status = self::STATUS_RELEASED;
-            } else {
                 $status = self::STATUS_SUBMITTED;
+            } else {
+                $status = self::STATUS_RELEASED;
             }
 
             $params = array(
@@ -874,14 +866,17 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     }
                 }
 
-                // Update submission data.
+                // Update submission data if its locked.
                 if ( $apilevel >= 3 ) {
-                    $maharasubmission->viewid = $response['copyid'];
+                    if ($this->get_config('lock')) {
+                        $maharasubmission->viewid = $response['copyid'];
+                        $maharasubmission->viewurl = $response['url'];
+                        $maharasubmission->viewtitle = clean_text($response['title']);
+                    }
                 } else {
                     $maharasubmission->viewid = $response['viewid'];
                 }
-                $maharasubmission->viewurl = $response['url'];
-                $maharasubmission->viewtitle = clean_text($response['title']);
+
                 $maharasubmission->viewstatus = $status;
                 $maharasubmission->iscollection = (int) $iscollection;
                 $params['objectid'] = $maharasubmission->id;
@@ -897,13 +892,15 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     // We are dealing with the new submission.
                     $maharasubmission = new stdClass();
                     if ( $apilevel >= 3 ) {
-                        $maharasubmission->viewid = $response['copyid'];
+                        if ($this->get_config('lock')) {
+                            $maharasubmission->viewid = $response['copyid'];
+                            $maharasubmission->viewurl = $response['url'];
+                            $maharasubmission->viewtitle = clean_text($response['title']);
+                        }
                     } else {
                         $maharasubmission->viewid = $response['viewid'];
                     }
 
-                    $maharasubmission->viewurl = $response['url'];
-                    $maharasubmission->viewtitle = clean_text($response['title']);
                     $maharasubmission->viewstatus = $status;
                     $maharasubmission->iscollection = (int) $iscollection;
 
@@ -952,23 +949,20 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         $maharasubmission = $this->get_mahara_submission($submission->id);
         // Lock view on Mahara side as it has been submitted for assessment.
-        if (!$response = $this->submit_view($submission, $maharasubmission->viewid, $maharasubmission->iscollection,
-          $submission->userid)) {
-            throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
-        }
-        $apilevel = $this->process_apilevel($response['apilevel']);
-        if ( $apilevel >= 3 ) {
-            $maharasubmission->viewid = $response['copyid'];
-        } else {
-            $maharasubmission->viewid = $response['viewid'];
-        }
-        $maharasubmission->viewurl = $response['url'];
-        $maharasubmission->viewstatus = self::STATUS_SUBMITTED;
-
-        if (!$this->get_config('lock')) {
-            if ($this->release_submitted_view($maharasubmission->viewid, array(), $maharasubmission->iscollection) === false) {
+        if ($this->get_config('lock')) {
+            if (!$response = $this->submit_view($submission, $maharasubmission->viewid, $maharasubmission->iscollection,
+                                                $submission->userid)) {
                 throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
             }
+            $apilevel = $this->process_apilevel($response['apilevel']);
+            if ( $apilevel >= 3 ) {
+                $maharasubmission->viewid = $response['copyid'];
+            } else {
+                $maharasubmission->viewid = $response['viewid'];
+            } 
+            $maharasubmission->viewurl = $response['url'];
+            $maharasubmission->viewstatus = self::STATUS_SUBMITTED;
+        } else {
             $maharasubmission->viewstatus = self::STATUS_RELEASED;
         }
 

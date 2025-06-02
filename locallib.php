@@ -593,6 +593,47 @@ class assign_submission_maharaws extends assign_submission_plugin {
     }
 
     /**
+     * Get view by id.
+     *
+     * @param int $viewid The view id.
+     * @param bool $iscollection Is collection.
+     * @return false|array
+     */
+    private function get_view($viewid, $iscollection) {
+        if (!$views = $this->get_views()) {
+            // Wrap recorded error in language string and return false.
+            $this->set_error(get_string('errorrequest', 'assignsubmission_maharaws', $this->get_error()));
+            return false;
+        }
+        if ($iscollection) {
+            $foundcoll = false;
+            if (!is_array($views['collections']['data'])) {
+                return false;
+            }
+            foreach ($views['collections']['data'] as $coll) {
+                if ($coll['id'] == $viewid) {
+                    $foundcoll = true;
+                    $viewdata = $coll;
+                    $viewdata['title'] = $coll['name'];
+                    break;
+                }
+            }
+            // The submitted collection id isn't one of the allowed options for this user.
+            if (!$foundcoll) {
+                return false;
+            }
+        } else {
+            $keys = array_flip($views['ids']);
+            // The submitted view id isn't one of the allowed options for this user.
+            if (!array_key_exists($viewid, $keys)) {
+                return false;
+            }
+            $viewdata = $views['data'][$keys[$viewid]];
+        }
+        return $viewdata;
+    }
+
+    /**
      * Submit view or collection for assessment in Mahara. This marks the view/collection
      * as "submitted", creates an access token, and locks the view/collection from editing
      * or further submissions in Mahara.
@@ -731,39 +772,13 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 );
             }
 
-            if (!$views = $this->get_views()) {
-                // Wrap recorded error in language string and return false.
-                $this->set_error(get_string('errorrequest', 'assignsubmission_maharaws', $this->get_error()));
+            if ($viewdata = $this->get_view($data->viewid, $iscollection)) {
+                $url = $viewdata['url'];
+                $title = clean_text($viewdata['title']);
+            } else {
                 return false;
             }
 
-            if ($iscollection) {
-                $foundcoll = false;
-                if (!is_array($views['collections']['data'])) {
-                    return false;
-                }
-                foreach ($views['collections']['data'] as $coll) {
-                    if ($coll['id'] == $data->viewid) {
-                        $foundcoll = true;
-                        $url = $coll['url'];
-                        $title = clean_text($coll['name']);
-                        break;
-                    }
-                }
-                // The submitted collection id isn't one of the allowed options for this user.
-                if (!$foundcoll) {
-                    return false;
-                }
-            } else {
-                $keys = array_flip($views['ids']);
-                // The submitted view id isn't one of the allowed options for this user.
-                if (!array_key_exists($data->viewid, $keys)) {
-                    return false;
-                }
-                $viewdata = $views['data'][$keys[$data->viewid]];
-                $url = $viewdata['url'];
-                $title = clean_text($viewdata['title']);
-            }
             if ($maharasubmission) {
                 $maharasubmission->viewid = $data->viewid;
                 $maharasubmission->viewurl = $url;
@@ -869,9 +884,16 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 // Update submission data if its locked.
                 if ( $apilevel >= 3 ) {
                     if ($this->get_config('lock')) {
+                        if ($viewdata = $this->get_view($response['copyid'], $iscollection)) {
+                            $url = $viewdata['url'];
+                            $title = clean_text($viewdata['title']);
+                        } else {
+                            $url = $response['url'];
+                            $title = clean_text($response['title']);
+                        }
                         $maharasubmission->viewid = $response['copyid'];
-                        $maharasubmission->viewurl = $response['url'];
-                        $maharasubmission->viewtitle = clean_text($response['title']);
+                        $maharasubmission->viewurl = $url;
+                        $maharasubmission->viewtitle = $title;
                     }
                 } else {
                     $maharasubmission->viewid = $response['viewid'];
@@ -893,9 +915,16 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     $maharasubmission = new stdClass();
                     if ( $apilevel >= 3 ) {
                         if ($this->get_config('lock')) {
+                            if ($viewdata = $this->get_view($response['copyid'], $iscollection)) {
+                                $url = $viewdata['url'];
+                                $title = clean_text($viewdata['title']);
+                            } else {
+                                $url = $response['url'];
+                                $title = clean_text($response['title']);
+                            }
                             $maharasubmission->viewid = $response['copyid'];
-                            $maharasubmission->viewurl = $response['url'];
-                            $maharasubmission->viewtitle = clean_text($response['title']);
+                            $maharasubmission->viewurl = $url;
+                            $maharasubmission->viewtitle = $title;
                         }
                     } else {
                         $maharasubmission->viewid = $response['viewid'];

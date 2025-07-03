@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/oauthlib.php');
 
 /**
- * library class for Mahara submission plugin extending submission plugin base class
+ * library class for Mahara submission plugin extending submission plugin base class.
  *
  * @package    assignsubmission_maharaws
  * @copyright  2012 Lancaster University
@@ -871,7 +871,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 'groupid' => $groupid,
                 'groupname' => $groupname
             );
-            $apilevel = $this->process_apilevel($response['apilevel']);
+
             if ($maharasubmission) {
                 // If we are updating previous submission, release previous submission first (if it's locked).
                 if ($maharasubmission->viewid != $data->viewid && $maharasubmission->viewstatus == self::STATUS_SUBMITTED) {
@@ -882,21 +882,10 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 }
 
                 // Update submission data if its locked.
-                if ( $apilevel >= 3 ) {
-                    if ($this->get_config('lock')) {
-                        if ($viewdata = $this->get_view($response['copyid'], $iscollection)) {
-                            $url = $viewdata['url'];
-                            $title = clean_text($viewdata['title']);
-                        } else {
-                            $url = $response['url'];
-                            $title = clean_text($response['title']);
-                        }
-                        $maharasubmission->viewid = $response['copyid'];
-                        $maharasubmission->viewurl = $url;
-                        $maharasubmission->viewtitle = $title;
-                    }
+                if ($this->get_config('lock')) {
+                    $maharasubmission = $this->update_submission_data($response, $iscollection, $maharasubmission);
                 } else {
-                    $maharasubmission->viewid = $response['viewid'];
+                    $maharasubmission->viewid = $data->viewid;
                 }
 
                 $maharasubmission->viewstatus = $status;
@@ -913,21 +902,10 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 } else {
                     // We are dealing with the new submission.
                     $maharasubmission = new stdClass();
-                    if ( $apilevel >= 3 ) {
-                        if ($this->get_config('lock')) {
-                            if ($viewdata = $this->get_view($response['copyid'], $iscollection)) {
-                                $url = $viewdata['url'];
-                                $title = clean_text($viewdata['title']);
-                            } else {
-                                $url = $response['url'];
-                                $title = clean_text($response['title']);
-                            }
-                            $maharasubmission->viewid = $response['copyid'];
-                            $maharasubmission->viewurl = $url;
-                            $maharasubmission->viewtitle = $title;
-                        }
+                    if ($this->get_config('lock')) {
+                        $maharasubmission = $this->update_submission_data($response, $iscollection, $maharasubmission);
                     } else {
-                        $maharasubmission->viewid = $response['viewid'];
+                        $maharasubmission->viewid = $data->viewid;
                     }
 
                     $maharasubmission->viewstatus = $status;
@@ -944,6 +922,33 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 }
             }
         }
+    }
+
+    /**
+     * Update submission data.
+     *
+     * @param mixed $response The response from Mahara API.
+     * @param bool $iscollection The iscollection bool value.
+     * @param mixed $maharasubmission The Mahara submission object.
+     * @return mixed
+     */
+    private function update_submission_data($response, $iscollection, $maharasubmission) {
+        $apilevel = $this->process_apilevel($response['apilevel']);
+        if ($apilevel >= 3) {
+            if ($viewdata = $this->get_view($response['copyid'], $iscollection)) {
+                $url = $viewdata['url'];
+                $title = clean_text($viewdata['title']);
+            } else {
+                $url = $response['url'];
+                $title = clean_text($response['title']);
+            }
+            $maharasubmission->viewid = $response['copyid'];
+            $maharasubmission->viewurl = $url;
+            $maharasubmission->viewtitle = $title;
+        } else {
+            $maharasubmission->viewid = $response['viewid'];
+        }
+        return $maharasubmission;
     }
 
     /**
@@ -988,7 +993,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 $maharasubmission->viewid = $response['copyid'];
             } else {
                 $maharasubmission->viewid = $response['viewid'];
-            } 
+            }
             $maharasubmission->viewurl = $response['url'];
             $maharasubmission->viewstatus = self::STATUS_SUBMITTED;
         } else {

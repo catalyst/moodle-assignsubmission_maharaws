@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/assign/submission/maharaws/db" VERSION="20191231" COMMENT="XMLDB file for Moodle mod/assign/submission/maharaws"
+<XMLDB PATH="mod/assign/submission/maharaws/db" VERSION="20260203" COMMENT="XMLDB file for Moodle mod/assign/submission/maharaws"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../../lib/xmldb/xmldb.xsd"
 >
@@ -14,11 +14,25 @@
         <FIELD NAME="viewtitle" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Title of Mahara view"/>
         <FIELD NAME="iscollection" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="viewstatus" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="The unique id for this onlinetext submission."/>
         <KEY NAME="assignment" TYPE="foreign" FIELDS="assignment" REFTABLE="assign" REFFIELDS="id" COMMENT="The assignment instance this online text submission relates to."/>
         <KEY NAME="submission" TYPE="foreign" FIELDS="submission" REFTABLE="assign_submission" REFFIELDS="id" COMMENT="The submission this online text submission relates to."/>
+        <KEY NAME="maharawsgroup" TYPE="foreign" FIELDS="groupid" REFTABLE="assignsubmission_maharawsgroup" REFFIELDS="id" COMMENT="The maharawsgroup this submission relates to."/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="assignsubmission_maharawsgroup" COMMENT="Default comment for the table, please edit me">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="moodlegroup" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="maharagroup" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="institution" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="moodlegroup" TYPE="foreign" FIELDS="moodlegroup" REFTABLE="groups" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
   </TABLES>

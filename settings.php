@@ -96,6 +96,35 @@ $settings->add(
 
 $settings->add(
     new admin_setting_configcheckbox(
+        'assignsubmission_maharaws/enablegroupsubmissions',
+        new lang_string('groups:enablegroupsubmissions', 'assignsubmission_maharaws'),
+        new lang_string('groups:enablegroupsubmissions_help', 'assignsubmission_maharaws'),
+        0
+    )
+);
+
+$settings->add(
+    new admin_setting_configtext(
+        'assignsubmission_maharaws/institution',
+        new lang_string('groups:institution', 'assignsubmission_maharaws'),
+        new lang_string('groups:institution_help', 'assignsubmission_maharaws'),
+        "",
+        PARAM_ALPHANUM
+    )
+);
+// Additional users to send notifications to.
+$settings->add(
+    new admin_setting_configtext(
+        'assignsubmission_maharaws/errornotifications',
+        new lang_string('groups:errornotifications', 'assignsubmission_maharaws'),
+        new lang_string('groups:errornotifications_help', 'assignsubmission_maharaws'),
+        "",
+        PARAM_TAGLIST
+    )
+);
+
+$settings->add(
+    new admin_setting_configcheckbox(
         'assignsubmission_maharaws/legacy_ext_usr_username',
         new lang_string('legacy_ext_username', 'assignsubmission_maharaws'),
         new lang_string('legacy_ext_username_help', 'assignsubmission_maharaws'),

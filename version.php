@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2025032100;
-$plugin->release   = 2025032100;
+$plugin->version   = 2025080800;
+$plugin->release   = 2025080800;
 $plugin->requires  = 2022090200; // Requires 4.1 or higher.
 $plugin->component = 'assignsubmission_maharaws';
 $plugin->supported = [401, 405];

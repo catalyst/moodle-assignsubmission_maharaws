@@ -755,10 +755,18 @@ class assign_submission_maharaws extends assign_submission_plugin {
         // Because the drop-down menu contains collections & views, we make the id
         // start with "v" or "c" to indicate the type, e.g. v30, c100.
         if ($data->viewid == 'none') {
+            $iscollection = false;
             $data->viewid = null;
         } else {
             $iscollection = ($data->viewid[0] == 'c');
             $data->viewid = substr($data->viewid, 1);
+        }
+
+        if ($viewdata = $this->get_view($data->viewid, $iscollection)) {
+            $url = $viewdata['url'];
+            $title = clean_text($viewdata['title']);
+        } else {
+            return false;
         }
 
         $maharasubmission = $this->get_mahara_submission($submission->id);
@@ -770,13 +778,6 @@ class assign_submission_maharaws extends assign_submission_plugin {
                         'assignsubmission_maharaws',
                         array('submission' => $submission->id)
                 );
-            }
-
-            if ($viewdata = $this->get_view($data->viewid, $iscollection)) {
-                $url = $viewdata['url'];
-                $title = clean_text($viewdata['title']);
-            } else {
-                return false;
             }
 
             if ($maharasubmission) {
@@ -886,6 +887,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     $maharasubmission = $this->update_submission_data($response, $iscollection, $maharasubmission);
                 } else {
                     $maharasubmission->viewid = $data->viewid;
+                    $maharasubmission->viewurl = $viewdata['url'];
+                    $maharasubmission->viewtitle = clean_text($viewdata['title']);
                 }
 
                 $maharasubmission->viewstatus = $status;
@@ -906,6 +909,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
                         $maharasubmission = $this->update_submission_data($response, $iscollection, $maharasubmission);
                     } else {
                         $maharasubmission->viewid = $data->viewid;
+                        $maharasubmission->viewurl = $viewdata['url'];
+                        $maharasubmission->viewtitle = clean_text($viewdata['title']);
                     }
 
                     $maharasubmission->viewstatus = $status;
@@ -988,13 +993,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
                                                 $submission->userid)) {
                 throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
             }
-            $apilevel = $this->process_apilevel($response['apilevel']);
-            if ( $apilevel >= 3 ) {
-                $maharasubmission->viewid = $response['copyid'];
-            } else {
-                $maharasubmission->viewid = $response['viewid'];
-            }
-            $maharasubmission->viewurl = $response['url'];
+            // Update submission data by replacing the original view url and title with the copy url and title.
+            $maharasubmission = $this->update_submission_data($response, $maharasubmission->iscollection, $maharasubmission);
             $maharasubmission->viewstatus = self::STATUS_SUBMITTED;
         } else {
             $maharasubmission->viewstatus = self::STATUS_RELEASED;

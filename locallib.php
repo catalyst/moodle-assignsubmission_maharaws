@@ -286,18 +286,12 @@ class assign_submission_maharaws extends assign_submission_plugin {
     /**
      * Check if the current user can configure the plugin in the provided context.
      *
-     * @param \context|null $context Context to check permissions in. If not set, then current page context will be used.
-     *
      * @return bool
      */
-    public function can_configure(context $context = null) {
+    public function can_configure() {
         global $PAGE;
 
-        if (empty($context)) {
-            $context = $PAGE->context;
-        }
-
-        return has_capability('assignsubmission/maharaws:configure', $context);
+        return has_capability('assignsubmission/maharaws:configure', $PAGE->context);
     }
 
     /**

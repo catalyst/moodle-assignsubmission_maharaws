@@ -1027,7 +1027,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
      * @param false|\stdClass $submission
      * @param \stdClass|null $flags
      */
-    public function lock($submission, stdClass $flags = null) {
+    public function lock($submission, ?stdClass $flags = null) {
         global $DB;
 
         $maharasubmission = $this->get_mahara_submission($submission->id);
@@ -1066,7 +1066,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
      * @param false|\stdClass $submission
      * @param \stdClass|null $flags
      */
-    public function unlock($submission, stdClass $flags = null) {
+    public function unlock($submission, ?stdClass $flags = null) {
         global $DB;
 
         // If it has been submitted, and we're using page locking, it needs to remain locked.

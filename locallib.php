@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/oauthlib.php');
+require_once($CFG->libdir . '/oauthlib.php');
 
 /**
  * library class for Mahara submission plugin extending submission plugin base class.
@@ -35,7 +35,6 @@ require_once($CFG->libdir.'/oauthlib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class assign_submission_maharaws extends assign_submission_plugin {
-
     /**
      * We've selected the page/collection, but we haven't locked it or issued a special access token.
      */
@@ -69,7 +68,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
     private function get_mahara_submission($submissionid) {
         global $DB;
 
-        return $DB->get_record('assignsubmission_maharaws', array('submission' => $submissionid));
+        return $DB->get_record('assignsubmission_maharaws', ['submission' => $submissionid]);
     }
 
     /**
@@ -90,9 +89,12 @@ class assign_submission_maharaws extends assign_submission_plugin {
             }
             // Static elemment doesn't allow hideif so we use a group to do this (MDL-66251).
             $group = [];
-            $group[] = $mform->createElement('static', 'assignsubmission_maharaws_label',
-                                             get_string('gclabel', 'assignsubmission_maharaws'),
-                                             get_string('forceglobalcredentialswarning', 'assignsubmission_maharaws'));
+            $group[] = $mform->createElement(
+                'static',
+                'assignsubmission_maharaws_label',
+                get_string('gclabel', 'assignsubmission_maharaws'),
+                get_string('forceglobalcredentialswarning', 'assignsubmission_maharaws')
+            );
             $mform->addGroup($group, 'maharawslabelgroup', '', ' ', false);
             $mform->hideIf('maharawslabelgroup', 'assignsubmission_maharaws_enabled', 'notchecked');
         }
@@ -102,7 +104,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 'text',
                 'assignsubmission_maharaws_url',
                 get_string('url', 'assignsubmission_maharaws'),
-                array('maxlength' => 255, 'size' => 50)
+                ['maxlength' => 255, 'size' => 50]
             );
             $mform->setType('assignsubmission_maharaws_url', PARAM_URL);
 
@@ -122,7 +124,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     'text',
                     'assignsubmission_maharaws_key',
                     get_string('key', 'assignsubmission_maharaws'),
-                    array('maxlength' => 255, 'size' => 50)
+                    ['maxlength' => 255, 'size' => 50]
                 );
                 $mform->setType('assignsubmission_maharaws_key', PARAM_ALPHANUM);
                 if (!empty($this->get_config_default('key'))) {
@@ -135,7 +137,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     'password',
                     'assignsubmission_maharaws_secret',
                     get_string('secret', 'assignsubmission_maharaws'),
-                    array('maxlength' => 255, 'size' => 50)
+                    ['maxlength' => 255, 'size' => 50]
                 );
                 $mform->setType('assignsubmission_maharaws_secret', PARAM_ALPHANUM);
                 if (!empty($this->get_config_default('secret'))) {
@@ -154,11 +156,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
         }
 
         // Menu to select whether to lock Mahara pages or not.
-        $locksettings = array(
+        $locksettings = [
             ASSIGNSUBMISSION_MAHARAWS_SETTING_DONTLOCK => new lang_string('no'),
             ASSIGNSUBMISSION_MAHARAWS_SETTING_KEEPLOCKED => new lang_string('yeskeeplocked', 'assignsubmission_maharaws'),
-            ASSIGNSUBMISSION_MAHARAWS_SETTING_UNLOCK => new lang_string('yesunlock', 'assignsubmission_maharaws')
-        );
+            ASSIGNSUBMISSION_MAHARAWS_SETTING_UNLOCK => new lang_string('yesunlock', 'assignsubmission_maharaws'),
+        ];
         if ($this->can_configure()) {
             $mform->addElement(
                 'select',
@@ -207,7 +209,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
         if (!empty($config->force_global_credentials)) {
             if (empty($config->url) || empty($config->key) || empty($config->secret)) {
                 $this->set_error(
-                    get_string('forceglobalcredentialserror', 'assignsubmission_maharaws'));
+                    get_string('forceglobalcredentialserror', 'assignsubmission_maharaws')
+                );
                 return false;
             }
         }
@@ -244,16 +247,16 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 return true;
             }
 
-            $data = $this->webservice_call("mahara_user_get_extended_context", array());
-            $funcs = array();
+            $data = $this->webservice_call("mahara_user_get_extended_context", []);
+            $funcs = [];
 
-            $required = array(
+            $required = [
                 "mahara_user_get_extended_context",
                 "mahara_submission_get_views_for_user",
                 "mahara_submission_submit_view_for_assessment",
                 "mahara_submission_release_submitted_view",
                 "module_lti_launch",
-            );
+            ];
 
             foreach ($data['functions'] as $v) {
                 $funcs[] = $v['function'];
@@ -261,19 +264,19 @@ class assign_submission_maharaws extends assign_submission_plugin {
             foreach ($required as $f) {
                 if (!in_array($f, $funcs)) {
                     $this->set_error(
-                        get_string('errorinvalidurl', 'assignsubmission_maharaws', 'missing functions: '.implode(", ", $required))
-                        ."\n\n".
+                        get_string('errorinvalidurl', 'assignsubmission_maharaws', 'missing functions: ' . implode(", ", $required))
+                        . "\n\n" .
                         get_string('invalidurlhelp', 'assignsubmission_maharaws')
                     );
                     return false;
                 }
             }
-
         } catch (Exception $e) {
             $this->set_error(
                 get_string('errorinvalidurl', 'assignsubmission_maharaws', $e->getMessage())
-                ."\n".
-                get_string('invalidurlhelp', 'assignsubmission_maharaws'));
+                . "\n" .
+                get_string('invalidurlhelp', 'assignsubmission_maharaws')
+            );
             return false;
         }
 
@@ -324,16 +327,16 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $endpoint = $url .
             (preg_match('/\/$/', $url) ? '' : '/') .
             'webservice/rest/server.php';
-        $args = array(
+        $args = [
             'oauth_consumer_key' => $key,
             'oauth_consumer_secret' => $secret,
             'oauth_callback' => 'about:blank',
             'api_root' => $endpoint,
-        );
+        ];
 
         $client = new \assignsubmission_maharaws\mahara_oauth($args);
         if (!empty($CFG->disablesslchecks)) {
-            $options = array('CURLOPT_SSL_VERIFYPEER' => 0, 'CURLOPT_SSL_VERIFYHOST' => 0);
+            $options = ['CURLOPT_SSL_VERIFYPEER' => 0, 'CURLOPT_SSL_VERIFYHOST' => 0];
             $client->setup_oauth_http_options($options);
         }
         // Have to flatten nested parameters into JSON as OAuth can't handle it.
@@ -342,16 +345,19 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 $params[$k] = json_encode($v);
             }
         }
-        $content = $client->request($method, $endpoint,
-                             array_merge($params, array('wsfunction' => $function, 'alt' => 'json')),
-                             null,
-                             $secret);
+        $content = $client->request(
+            $method,
+            $endpoint,
+            array_merge($params, ['wsfunction' => $function, 'alt' => 'json']),
+            null,
+            $secret
+        );
         $data = json_decode($content, true);
         if (empty($data)) {
             return $data;
         }
 
-        if (isset($data['error']) && $data['error'] == true ) {
+        if (isset($data['error']) && $data['error'] == true) {
             throw new Exception($data['error_rendered']);
         }
         return $data;
@@ -393,14 +399,14 @@ class assign_submission_maharaws extends assign_submission_plugin {
         }
 
         if (!$views) {
-            $views = array(
-                'data' => array(),
-                'collections' => array('data' => array()),
-                'ids' => array(),
-            );
+            $views = [
+                'data' => [],
+                'collections' => ['data' => []],
+                'ids' => [],
+            ];
         }
         $viewids = $views['ids'];
-        list($insql, $inparams) = $DB->get_in_or_equal($viewids, SQL_PARAMS_NAMED, 'param', true, true);
+        [$insql, $inparams] = $DB->get_in_or_equal($viewids, SQL_PARAMS_NAMED, 'param', true, true);
         $sql = "SELECT mws.id, us.* from (
               select value as url,
                       assignment
@@ -412,14 +418,14 @@ class assign_submission_maharaws extends assign_submission_plugin {
           ) AS us JOIN {assignsubmission_maharaws} as mws on us.assignment = mws.assignment where url = :url
         AND viewstatus = 'submitted' AND viewid {$insql}";
         $params = [
-            'url' => $this->get_config_default('url')
+            'url' => $this->get_config_default('url'),
         ];
         $params += $inparams;
         $alreadyselected = $DB->get_records_sql($sql, $params);
         if (is_array($alreadyselected)) {
             $alreadyselected = array_column($alreadyselected, 'viewid', 'viewid');
         } else {
-            $alreadyselected = array();
+            $alreadyselected = [];
         }
         // Filter out collection views, special views, and already-submitted views (except the current one).
         foreach ($views['data'] as $i => $view) {
@@ -428,10 +434,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 || $view['type'] != 'portfolio'
                 || (
                     (
-                        array_key_exists($view['id'], $alreadyselected) ||
-                        $view['submittedtime']
+                        array_key_exists($view['id'], $alreadyselected)
+                        || $view['submittedtime']
                     )
-                    && !($view['id'] == $selectedid && $selectediscollection == false)
+                    && !($view['id'] == $selectedid
+                    && $selectediscollection == false)
                 )
             ) {
                 unset($views['ids'][$i]);
@@ -463,7 +470,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         // Prepare the header.
         try {
-            $remotehost = (object) $this->webservice_call("mahara_user_get_extended_context", array());
+            $remotehost = (object) $this->webservice_call("mahara_user_get_extended_context", []);
         } catch (Exception $e) {
             debugging("Remote host webservice call failed: " . $e->getCode() . ":" . $e->getMessage());
             throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());
@@ -488,7 +495,9 @@ class assign_submission_maharaws extends assign_submission_plugin {
             $mform->setDefault('viewid', 'none');
 
             if (!empty($views['data'])) {
-                $mform->addElement('static', '',
+                $mform->addElement(
+                    'static',
+                    '',
                     get_string('viewsby', 'assignsubmission_maharaws', $views['displayname'])
                 );
 
@@ -500,8 +509,12 @@ class assign_submission_maharaws extends assign_submission_plugin {
                         $mform->addElement('radio', 'viewid', '', $anchor, 'v' . $view['id']);
                     }
                     if ($maharasubmission && $view['id'] == $maharasubmission->viewid) {
-                        $currentpagesubmitted = $mform->createElement('static', 'currentsubmission',
-                            get_string('currentsubmitted', 'assignsubmission_maharaws', 'page'), $view['displaytitle']);
+                        $currentpagesubmitted = $mform->createElement(
+                            'static',
+                            'currentsubmission',
+                            get_string('currentsubmitted', 'assignsubmission_maharaws', 'page'),
+                            $view['displaytitle']
+                        );
                     }
                 }
 
@@ -510,7 +523,9 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 }
             }
             if (!empty($views['collections']['data'])) {
-                $mform->addElement('static', 'collection_by',
+                $mform->addElement(
+                    'static',
+                    'collection_by',
                     get_string('collectionsby', 'assignsubmission_maharaws', $views['displayname'])
                 );
                 foreach ($views['collections']['data'] as $coll) {
@@ -521,14 +536,17 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     }
 
                     if ($maharasubmission && $coll['id'] == $maharasubmission->viewid) {
-                        $currentcollsubmitted = $mform->createElement('static', 'currentsubmission',
-                           get_string('currentsubmitted', 'assignsubmission_maharaws', 'collection'), $coll['name']);
+                        $currentcollsubmitted = $mform->createElement(
+                            'static',
+                            'currentsubmission',
+                            get_string('currentsubmitted', 'assignsubmission_maharaws', 'collection'),
+                            $coll['name']
+                        );
                     }
                 }
                 if (!empty($currentcollsubmitted)) {
                     $mform->addElement($currentcollsubmitted);
                 }
-
             }
             if (!empty($maharasubmission)) {
                 if ($maharasubmission->iscollection) {
@@ -551,7 +569,6 @@ class assign_submission_maharaws extends assign_submission_plugin {
             $mform->setType('viewid', PARAM_ALPHANUM);
             return true;
         }
-
     }
 
     /**
@@ -568,9 +585,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $field = $this->get_mahara_idfield();
 
         try {
-            $result = $this->webservice_call("mahara_submission_get_views_for_user",
-                                      array('users' => array( array($field => $username,
-                                                                    'query' => $query))));
+            $result = $this->webservice_call(
+                "mahara_submission_get_views_for_user",
+                ['users' => [ [$field => $username,
+                'query' => $query]]]
+            );
             if (!empty($result)) {
                 $result = array_pop($result);
                 $result['views']['ids'] = array_map('intval', explode(',', $result['views']['ids']));
@@ -585,7 +604,6 @@ class assign_submission_maharaws extends assign_submission_plugin {
             } else {
                 $result['views'] = null;
             }
-
         } catch (Exception $e) {
             throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());
         }
@@ -667,7 +685,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $params = [
             'url' => $this->get_config_default('url'),
             'viewid' => $viewid,
-            'iscollection' => $iscollection
+            'iscollection' => $iscollection,
         ];
         $alreadyselected = $DB->get_records_sql($sql, $params);
         if (!empty($alreadyselected)) {
@@ -677,7 +695,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         if (!$viewownermoodleid) {
             $username = $USER->{$this->get_config('username_attribute')};
         } else {
-            $username = $DB->get_field('user', $this->get_config('username_attribute'), array('id' => $viewownermoodleid));
+            $username = $DB->get_field('user', $this->get_config('username_attribute'), ['id' => $viewownermoodleid]);
         }
 
         require_once($CFG->dirroot . '/mod/assign/submission/maharaws/lib.php');
@@ -686,22 +704,22 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         try {
             $result  = $this->webservice_call(
-                        'mahara_submission_submit_view_for_assessment',
-                            array('views' =>
-                                array(
-                                    array($field => $username,
+                'mahara_submission_submit_view_for_assessment',
+                ['views' =>
+                                [
+                                    [$field => $username,
                                         'viewid' => $viewid,
                                         'iscollection' => $iscollection,
                                         'lock' => true,
                                         'apilevel' => 'moodle-assignsubmission-mahara:3',
                                         'wwwroot' => $CFG->wwwroot,
-                                    ),
-                                )
-                            )
-                        );
+                                    ],
+                                ],
+                            ]
+            );
             $result = array_pop($result);
         } catch (Exception $e) {
-            debugging("Submit view for assessment webservice call failed: ".$e->getCode().":".$e->getMessage());
+            debugging("Submit view for assessment webservice call failed: " . $e->getCode() . ":" . $e->getMessage());
             throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());
         }
         return $result;
@@ -725,17 +743,17 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
             $field = $this->get_mahara_idfield();
             $result  = $this->webservice_call(
-                       'mahara_submission_release_submitted_view',
-                       array('views' => array( array($field => $username,
+                'mahara_submission_release_submitted_view',
+                ['views' => [ [$field => $username,
                                                       'viewid' => $viewid,
                                                       'iscollection' => $iscollection,
                                                       'viewoutcomes' => implode(',', $viewoutcomes),
                                                       'archiveonrelease' => $this->get_config('archiveonrelease'),
-                                                      'externalid' => $this->assignment->get_course_module()->id))
-                       ));
-
+                                                      'externalid' => $this->assignment->get_course_module()->id]],
+                ]
+            );
         } catch (Exception $e) {
-            debugging("Submit view for assessment webservice call failed: ".$e->getCode().":".$e->getMessage());
+            debugging("Submit view for assessment webservice call failed: " . $e->getCode() . ":" . $e->getMessage());
             throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());
         }
         return $result;
@@ -775,8 +793,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
             if ($data->viewid === null) {
                 // They selected "(nothing selected)", so remove their Mahara selection.
                 return $DB->delete_records(
-                        'assignsubmission_maharaws',
-                        array('submission' => $submission->id)
+                    'assignsubmission_maharaws',
+                    ['submission' => $submission->id]
                 );
             }
 
@@ -809,7 +827,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     if ($maharasubmission->viewstatus == self::STATUS_SUBMITTED) {
                         $response = $this->release_submitted_view(
                             $maharasubmission->viewid,
-                            array(),
+                            [],
                             $maharasubmission->iscollection
                         );
                         if ($response === false) {
@@ -817,7 +835,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                         }
                     }
                     // Delete the record of the previously selected page from our submission, and exit.
-                    return $DB->delete_records('assignsubmission_maharaws', array('submission' => $submission->id));
+                    return $DB->delete_records('assignsubmission_maharaws', ['submission' => $submission->id]);
                 } else {
                     // No previously selected page to clear.
                     return true;
@@ -837,15 +855,15 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 $status = self::STATUS_RELEASED;
             }
 
-            $params = array(
+            $params = [
                 'context' => context_module::instance($this->assignment->get_course_module()->id),
                 'courseid' => $this->assignment->get_course()->id,
                 'objectid' => $submission->id,
-                'other' => array(
-                    'pathnamehashes' => array(),
-                    'content' => ''
-                )
-            );
+                'other' => [
+                    'pathnamehashes' => [],
+                    'content' => '',
+                ],
+            ];
             if (!empty($submission->userid) && ($submission->userid != $USER->id)) {
                 $params['relateduserid'] = $submission->userid;
             }
@@ -856,7 +874,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             $groupid = 0;
             // Get the group name as other fields are not transcribed in the logs and this information is important.
             if (empty($submission->userid) && !empty($submission->groupid)) {
-                $groupname = $DB->get_field('groups', 'name', array('id' => $submission->groupid), MUST_EXIST);
+                $groupname = $DB->get_field('groups', 'name', ['id' => $submission->groupid], MUST_EXIST);
                 $groupid = $submission->groupid;
             } else {
                 $params['relateduserid'] = $submission->userid;
@@ -865,18 +883,18 @@ class assign_submission_maharaws extends assign_submission_plugin {
             // Unset the objectid and other field from params for use in submission events.
             unset($params['objectid']);
             unset($params['other']);
-            $params['other'] = array(
+            $params['other'] = [
                 'submissionid' => $submission->id,
                 'submissionattempt' => $submission->attemptnumber,
                 'submissionstatus' => $submission->status,
                 'groupid' => $groupid,
-                'groupname' => $groupname
-            );
+                'groupname' => $groupname,
+            ];
 
             if ($maharasubmission) {
                 // If we are updating previous submission, release previous submission first (if it's locked).
                 if ($maharasubmission->viewid != $data->viewid && $maharasubmission->viewstatus == self::STATUS_SUBMITTED) {
-                    $result = $this->release_submitted_view($maharasubmission->viewid, array(), $maharasubmission->iscollection);
+                    $result = $this->release_submitted_view($maharasubmission->viewid, [], $maharasubmission->iscollection);
                     if ($result === false) {
                         throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
                     }
@@ -901,7 +919,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 return $updatestatus;
             } else {
                 if ($data->viewid === null) {
-                    return $DB->delete_records('assignsubmission_maharaws', array('submission' => $submission->id));
+                    return $DB->delete_records('assignsubmission_maharaws', ['submission' => $submission->id]);
                 } else {
                     // We are dealing with the new submission.
                     $maharasubmission = new stdClass();
@@ -989,8 +1007,14 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $maharasubmission = $this->get_mahara_submission($submission->id);
         // Lock view on Mahara side as it has been submitted for assessment.
         if ($this->get_config('lock')) {
-            if (!$response = $this->submit_view($submission, $maharasubmission->viewid, $maharasubmission->iscollection,
-                                                $submission->userid)) {
+            if (
+                !$response = $this->submit_view(
+                    $submission,
+                    $maharasubmission->viewid,
+                    $maharasubmission->iscollection,
+                    $submission->userid
+                )
+            ) {
                 throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
             }
             // Update submission data by replacing the original view url and title with the copy url and title.
@@ -1065,7 +1089,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         }
 
         // Unlock view on Mahara side as it has been unlocked.
-        if ($this->release_submitted_view($maharasubmission->viewid, array(), $maharasubmission->iscollection) === false) {
+        if ($this->release_submitted_view($maharasubmission->viewid, [], $maharasubmission->iscollection) === false) {
             throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
         }
         $this->set_mahara_submission_status($maharasubmission->submission, self::STATUS_RELEASED);
@@ -1090,7 +1114,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $maharasubmission = $this->get_mahara_submission($submission->id);
         if ($maharasubmission->viewstatus === self::STATUS_SUBMITTED) {
             // Unlock view on Mahara side as it has been reverted to draft.
-            if ($this->release_submitted_view($maharasubmission->viewid, array(), $maharasubmission->iscollection) === false) {
+            if ($this->release_submitted_view($maharasubmission->viewid, [], $maharasubmission->iscollection) === false) {
                 throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
             }
             $this->set_mahara_submission_status($submission->id, self::STATUS_RELEASED);
@@ -1123,20 +1147,20 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $cm = $PAGE->cm;
 
         $icon = $OUTPUT->pix_icon('t/preview', $name);
-        $params = array(
+        $params = [
             'title' => $title ?: $name,
             'target' => '_blank',
             'rel' => 'noopener noreferrer',
-        );
+        ];
 
         $url = new moodle_url(
             '/mod/assign/submission/maharaws/launch.php',
-            array('url' => $url, 'id' => $cm->id, 'sesskey' => sesskey())
+            ['url' => $url, 'id' => $cm->id, 'sesskey' => sesskey()]
         );
 
-        $popupicon = html_writer::link($url->out(false), $icon, $params + array(
+        $popupicon = html_writer::link($url->out(false), $icon, $params + [
           'class' => 'portfolio',
-        ));
+        ]);
 
         $link = html_writer::link($url, $name, $params);
 
@@ -1157,7 +1181,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         $result = '';
         $maharasubmission = $this->get_mahara_submission($submission->id);
         if ($maharasubmission) {
-            $fields = array( 'assignment' => $submission->assignment );
+            $fields = [ 'assignment' => $submission->assignment ];
             if (!empty($submission->groupid)) {
                 $fields['groupid'] = $submission->groupid;
             }
@@ -1208,7 +1232,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
      * @param string $log record log events here
      * @return bool Was it a success?
      */
-    public function upgrade_settings(context $oldcontext, stdClass $oldassignment, & $log) {
+    public function upgrade_settings(context $oldcontext, stdClass $oldassignment, &$log) {
         return true;
     }
 
@@ -1222,7 +1246,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
      * @param string $log Record upgrade messages in the log
      * @return bool true or false - false will trigger a rollback
      */
-    public function upgrade(context $oldcontext, stdClass $oldassignment, stdClass $oldsubmission, stdClass $submission, & $log) {
+    public function upgrade(context $oldcontext, stdClass $oldassignment, stdClass $oldsubmission, stdClass $submission, &$log) {
         global $DB;
 
         $maharadata = unserialize($oldsubmission->data2);
@@ -1256,21 +1280,21 @@ class assign_submission_maharaws extends assign_submission_plugin {
         global $DB;
         // First of all release all pages on remote site.
         $records = $DB->get_records(
-                'assignsubmission_maharaws',
-                array(
+            'assignsubmission_maharaws',
+            [
                         'assignment' => $this->assignment->get_instance()->id,
-                        'viewstatus' => self::STATUS_SUBMITTED
-                )
+                        'viewstatus' => self::STATUS_SUBMITTED,
+                ]
         );
         foreach ($records as $record) {
-            if ($this->release_submitted_view($record->viewid, array(), $record->iscollection) === false) {
+            if ($this->release_submitted_view($record->viewid, [], $record->iscollection) === false) {
                 // A problem on the Mahara side should not prevent the assignment from being deleted.
                 // But it's worth printing a message to the error logs.
                 debugging(get_string('errorrequest', 'assignsubmission_maharaws', $this->get_error()));
             }
         }
         // Now delete records.
-        $DB->delete_records('assignsubmission_maharaws', array('assignment' => $this->assignment->get_instance()->id));
+        $DB->delete_records('assignsubmission_maharaws', ['assignment' => $this->assignment->get_instance()->id]);
 
         return true;
     }
@@ -1285,13 +1309,13 @@ class assign_submission_maharaws extends assign_submission_plugin {
         global $DB;
         $maharasubmission = $this->get_mahara_submission($submission->id);
         if ($maharasubmission && $maharasubmission->viewstatus == self::STATUS_SUBMITTED) {
-            if ($this->release_submitted_view($maharasubmission->viewid, array(), $maharasubmission->iscollection) === false) {
+            if ($this->release_submitted_view($maharasubmission->viewid, [], $maharasubmission->iscollection) === false) {
                 throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
             }
             $this->set_mahara_submission_status($maharasubmission->submission, self::STATUS_RELEASED);
         }
         if ($submission->id || $submission->id == 0) {
-            $DB->delete_records('assignsubmission_maharaws', array('submission' => $submission->id));
+            $DB->delete_records('assignsubmission_maharaws', ['submission' => $submission->id]);
         }
         return true;
     }
@@ -1308,7 +1332,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         // the student can make improvements and then resubmit.
         $maharasubmission = $this->get_mahara_submission($oldsubmission->id);
         if ($maharasubmission && $maharasubmission->viewstatus == self::STATUS_SUBMITTED) {
-            if ($this->release_submitted_view($maharasubmission->viewid, array(), $maharasubmission->iscollection) === false) {
+            if ($this->release_submitted_view($maharasubmission->viewid, [], $maharasubmission->iscollection) === false) {
                 throw new moodle_exception('errorrequest', 'assignsubmission_maharaws', '', $this->get_error());
             }
             $this->set_mahara_submission_status($maharasubmission->submission, self::STATUS_RELEASED);
@@ -1328,7 +1352,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
         if (!($status === self::STATUS_SELECTED || $status === self::STATUS_SUBMITTED || $status === self::STATUS_RELEASED)) {
             throw new moodle_exception('errorinvalidstatus', 'assignsubmission_maharaws');
         }
-        return $DB->set_field('assignsubmission_maharaws', 'viewstatus', $status, array('submission' => $submissionid));
+        return $DB->set_field('assignsubmission_maharaws', 'viewstatus', $status, ['submission' => $submissionid]);
     }
 
     /**
@@ -1362,7 +1386,6 @@ class assign_submission_maharaws extends assign_submission_plugin {
              'studentid' :
         // Else the same attribute name in Mahara.
              $this->get_config('username_attribute')));
-
     }
 
     /**
@@ -1382,10 +1405,10 @@ class assign_submission_maharaws extends assign_submission_plugin {
             // We can't use $this->get_config beacuase the settings aren't stored quite in a standard way.
             if ($this->assignment->has_instance()) {
                 $assignment = $this->assignment->get_instance();
-                $dbparams = array('assignment' => $assignment->id,
+                $dbparams = ['assignment' => $assignment->id,
                           'plugin' => 'maharaws',
                           'subtype' => 'assignsubmission',
-                          'name' => $config);
+                          'name' => $config];
                 $result = $DB->get_record('assign_plugin_config', $dbparams, '*', IGNORE_MISSING);
                 if ($result) {
                     return trim($result->value);
@@ -1412,7 +1435,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
             $items[] = [
                 'id'           => $record->id,
                 'viewid'       => $record->viewid,
-                'iscollection' => $record->iscollection
+                'iscollection' => $record->iscollection,
             ];
         }
         try {

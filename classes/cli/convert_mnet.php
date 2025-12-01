@@ -25,11 +25,11 @@
 define('CLI_SCRIPT', true);
 
 // Assume this file is located in moodle/mod/assign/submission/maharaws/classes/cli/ .
-require(__DIR__.'/../../../../../../config.php');
-require_once($CFG->libdir.'/clilib.php');
-require_once($CFG->dirroot.'/mod/assign/locallib.php');
-require_once($CFG->dirroot.'/mod/assign/submissionplugin.php');
-require_once($CFG->dirroot.'/mod/assign/submission/maharaws/locallib.php');
+require(__DIR__ . '/../../../../../../config.php');
+require_once($CFG->libdir . '/clilib.php');
+require_once($CFG->dirroot . '/mod/assign/locallib.php');
+require_once($CFG->dirroot . '/mod/assign/submissionplugin.php');
+require_once($CFG->dirroot . '/mod/assign/submission/maharaws/locallib.php');
 
 $assign = new assign(null, null, null);
 $wsplugin = $assign->get_submission_plugin_by_type('maharaws');
@@ -75,7 +75,7 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
         $assignments[$record->assignment][] = (object)[
             'id'           => $record->id,
             'viewid'       => $record->viewid,
-            'iscollection' => $record->iscollection
+            'iscollection' => $record->iscollection,
         ];
     }
     foreach ($assignments as $assid => $assignment) {
@@ -84,7 +84,7 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
         $dbparams = [
             'assignment' => $assid,
             'plugin' => 'maharaws',
-            'subtype' => 'assignsubmission'
+            'subtype' => 'assignsubmission',
         ];
         if ($result = $DB->get_records('assign_plugin_config', $dbparams)) {
             $resultarray = [];
@@ -93,7 +93,7 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
             }
             if (empty($resultarray['enabled'])) {
                 mtrace("assignsubmission_maharaws disabled for assignment {$assid}: skipping");
-                $records = array_filter($records, function($a) use($assid) {
+                $records = array_filter($records, function ($a) use ($assid) {
                     return $a->assignment != $assid;
                 });
                 continue;
@@ -122,7 +122,7 @@ if (!empty(get_config('assignsubmission_maharaws', 'force_global_credentials')))
             $data = $wsplugin->run_get_views_by_id($data, $assignment);
         } else {
             mtrace("no maharaws endpoint configured for assignment {$assid}: skipping");
-            $records = array_filter($records, function($a) use($assid) {
+            $records = array_filter($records, function ($a) use ($assid) {
                 return $a->assignment != $assid;
             });
             continue;
@@ -146,14 +146,16 @@ foreach ($records as $record) {
     $todb->viewtitle    = $record->viewtitle;
     $todb->iscollection = $record->iscollection;
     $status = $record->viewstatus;
-    if ($status == assign_submission_maharaws::STATUS_RELEASED ||
+    if (
+        $status == assign_submission_maharaws::STATUS_RELEASED ||
         $status == assign_submission_maharaws::STATUS_SELECTED ||
-        $status == assign_submission_maharaws::STATUS_SUBMITTED) {
+        $status == assign_submission_maharaws::STATUS_SUBMITTED
+    ) {
         $todb->viewstatus = $status;
     }
     if (!$todb->iscollection) {
         if ($todb->viewstatus == assign_submission_maharaws::STATUS_SELECTED) {
-            $urlstring = '/user/' . $dataitem['owner'] .'/'. $dataitem['urlid'];
+            $urlstring = '/user/' . $dataitem['owner'] . '/' . $dataitem['urlid'];
             $todb->viewurl = $dataitem['endpointurl'] . $urlstring;
         } else {
             $todb->viewurl = '/view/view.php?id=' . $todb->viewid;

@@ -24,8 +24,8 @@
 
 require("../../../../config.php");
 
-require_once($CFG->dirroot.'/mod/lti/lib.php');
-require_once($CFG->dirroot.'/mod/lti/locallib.php');
+require_once($CFG->dirroot . '/mod/lti/lib.php');
+require_once($CFG->dirroot . '/mod/lti/locallib.php');
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
 confirm_sesskey();
@@ -33,7 +33,7 @@ confirm_sesskey();
 $id = required_param('id', PARAM_INT); // Assignment id.
 $target = required_param('url', PARAM_URL); // Mahara view launch.
 
-list ($course, $cm) = get_course_and_cm_from_cmid($id, 'assign');
+ [$course, $cm] = get_course_and_cm_from_cmid($id, 'assign');
 
 require_login($course, true, $cm);
 
@@ -41,13 +41,13 @@ $context = context_module::instance($cm->id);
 
 require_capability('mod/assign:view', $context);
 
-$url = new \moodle_url('/mod/assign/view.php', array('id' => $id, 'sesskey' => sesskey()));
+$url = new \moodle_url('/mod/assign/view.php', ['id' => $id, 'sesskey' => sesskey()]);
 $returnurl = $url->out(false);
 $urlparts = parse_url($CFG->wwwroot);
 $extuserusername = $USER->username;
 $assign = new assign($context, $cm, $course);
 $maharasubmission = new assign_submission_maharaws($assign, 'assignsubmission_maharaws');
-if ( get_config('assignsubmission_maharaws', 'legacy_ext_usr_username') ) {
+if (get_config('assignsubmission_maharaws', 'legacy_ext_usr_username')) {
     // Determine the Mahara field and the username value.
     $usernameattribute = $maharasubmission->get_config_default('username_attribute');
     $remoteuser = $maharasubmission->get_config_default('remoteuser');
@@ -61,9 +61,9 @@ if ( get_config('assignsubmission_maharaws', 'legacy_ext_usr_username') ) {
                 'studentid' :
                 // Else the same attribute name in Mahara.
                 $usernameattribute));
-    $extuserusername = $field.':'.$username;
+    $extuserusername = $field . ':' . $username;
 }
-$requestparams = array(
+$requestparams = [
         'resource_link_title' => $cm->name,
         'resource_link_description' => $cm->name,
         'user_id' => $USER->id,
@@ -90,11 +90,11 @@ $requestparams = array(
         "tool_consumer_instance_guid" => $urlparts['host'],
         'tool_consumer_instance_name' => get_site()->fullname,
         'wsfunction' => 'module_lti_launch',
-        );
+        ];
 
 
 $endpoint = $maharasubmission->get_config_default('url');
-$endpoint = $endpoint.(preg_match('/\/$/', $endpoint) ? '' : '/').'webservice/rest/server.php';
+$endpoint = $endpoint . (preg_match('/\/$/', $endpoint) ? '' : '/') . 'webservice/rest/server.php';
 $key = $maharasubmission->get_config_default('key');
 $secret = $maharasubmission->get_config_default('secret');
 

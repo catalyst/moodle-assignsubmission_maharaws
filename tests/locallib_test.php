@@ -38,8 +38,7 @@ require_once($CFG->dirroot . '/mod/assign/tests/generator.php');
  * @copyright  2024 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class locallib_test extends \advanced_testcase {
-
+final class locallib_test extends \advanced_testcase {
     // Use the generator helper.
     use mod_assign_test_generator;
 
@@ -52,7 +51,7 @@ class locallib_test extends \advanced_testcase {
      *
      * @covers ::save_settings
      */
-    public function test_save_settings() {
+    public function test_save_settings(): void {
         global $DB;
 
         $this->resetAfterTest();
@@ -97,13 +96,13 @@ class locallib_test extends \advanced_testcase {
 
         // Assert that all submission config for assign has been set.
         // Assumes that global credentials are forced.
-        $dbparams = array('assignment' => $assignwithpermission->get_instance()->id,
+        $dbparams = ['assignment' => $assignwithpermission->get_instance()->id,
                           'subtype' => 'assignsubmission',
-                          'plugin' => 'maharaws');
+                          'plugin' => 'maharaws'];
         $this->assertCount(6, $DB->get_records('assign_plugin_config', $dbparams));
-        $dbparams = array('assignment' => $assignwithoutpermission->get_instance()->id,
+        $dbparams = ['assignment' => $assignwithoutpermission->get_instance()->id,
                           'subtype' => 'assignsubmission',
-                          'plugin' => 'maharaws');
+                          'plugin' => 'maharaws'];
         $this->assertCount(6, $DB->get_records('assign_plugin_config', $dbparams));
     }
 }

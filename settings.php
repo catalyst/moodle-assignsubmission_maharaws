@@ -27,35 +27,37 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/assign/submission/maharaws/lib.php');
 
 $settings->add(
-        new admin_setting_configcheckbox('assignsubmission_maharaws/default',
-                new lang_string('defaulton', 'assignsubmission_maharaws'),
-                new lang_string('defaulton_help', 'assignsubmission_maharaws'),
-                0
-        )
+    new admin_setting_configcheckbox(
+        'assignsubmission_maharaws/default',
+        new lang_string('defaulton', 'assignsubmission_maharaws'),
+        new lang_string('defaulton_help', 'assignsubmission_maharaws'),
+        0
+    )
 );
 
 $settings->add(
     new admin_setting_configselect(
         'assignsubmission_maharaws/lock',
         new lang_string(
-                'defaultlockpages',
-                'assignsubmission_maharaws',
-                new lang_string('lockpages', 'assignsubmission_maharaws')
+            'defaultlockpages',
+            'assignsubmission_maharaws',
+            new lang_string('lockpages', 'assignsubmission_maharaws')
         ),
         new lang_string(
-                'defaultlockpages_help',
-                'assignsubmission_maharaws',
-                new lang_string('lockpages', 'assignsubmission_maharaws')
+            'defaultlockpages_help',
+            'assignsubmission_maharaws',
+            new lang_string('lockpages', 'assignsubmission_maharaws')
         ),
         ASSIGNSUBMISSION_MAHARAWS_SETTING_UNLOCK,
-        array(ASSIGNSUBMISSION_MAHARAWS_SETTING_DONTLOCK => new lang_string('no'),
+        [ASSIGNSUBMISSION_MAHARAWS_SETTING_DONTLOCK => new lang_string('no'),
                 ASSIGNSUBMISSION_MAHARAWS_SETTING_KEEPLOCKED => new lang_string('yeskeeplocked', 'assignsubmission_maharaws'),
-                ASSIGNSUBMISSION_MAHARAWS_SETTING_UNLOCK => new lang_string('yesunlock', 'assignsubmission_maharaws'))
+                ASSIGNSUBMISSION_MAHARAWS_SETTING_UNLOCK => new lang_string('yesunlock', 'assignsubmission_maharaws')]
     )
 );
 
 $settings->add(
-    new admin_setting_configcheckbox('assignsubmission_maharaws/force_global_credentials',
+    new admin_setting_configcheckbox(
+        'assignsubmission_maharaws/force_global_credentials',
         new lang_string('forceglobalcredentials', 'assignsubmission_maharaws'),
         new lang_string('forceglobalcredentials_help', 'assignsubmission_maharaws'),
         0
@@ -63,7 +65,8 @@ $settings->add(
 );
 
 $settings->add(
-    new admin_setting_configtext('assignsubmission_maharaws/url',
+    new admin_setting_configtext(
+        'assignsubmission_maharaws/url',
         new lang_string('url', 'assignsubmission_maharaws'),
         new lang_string('url_help', 'assignsubmission_maharaws'),
         "",
@@ -72,7 +75,8 @@ $settings->add(
 );
 
 $settings->add(
-    new admin_setting_configtext('assignsubmission_maharaws/key',
+    new admin_setting_configtext(
+        'assignsubmission_maharaws/key',
         new lang_string('key', 'assignsubmission_maharaws'),
         new lang_string('key_help', 'assignsubmission_maharaws'),
         "",
@@ -81,18 +85,20 @@ $settings->add(
 );
 
 $settings->add(
-        new admin_setting_configtext('assignsubmission_maharaws/secret',
+    new admin_setting_configtext(
+        'assignsubmission_maharaws/secret',
         new lang_string('secret', 'assignsubmission_maharaws'),
         new lang_string('secret_help', 'assignsubmission_maharaws'),
         "",
         PARAM_ALPHANUM
-        )
+    )
 );
 
 $settings->add(
-        new admin_setting_configcheckbox('assignsubmission_maharaws/legacy_ext_usr_username',
-                new lang_string('legacy_ext_username', 'assignsubmission_maharaws'),
-                new lang_string('legacy_ext_username_help', 'assignsubmission_maharaws'),
-                0
-        )
+    new admin_setting_configcheckbox(
+        'assignsubmission_maharaws/legacy_ext_usr_username',
+        new lang_string('legacy_ext_username', 'assignsubmission_maharaws'),
+        new lang_string('legacy_ext_username_help', 'assignsubmission_maharaws'),
+        0
+    )
 );

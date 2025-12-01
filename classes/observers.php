@@ -30,7 +30,6 @@ require_once($CFG->dirroot . '/mod/assign/submission/maharaws/lib.php');
  * Event handler for assign_submission_mahara plugin.
  */
 class assignsubmission_maharaws_observers {
-
     /**
      * Process assignment grading function called by event trigger (see db/events.php).
      * It unlocks pages on Mahara when submission has been graded.
@@ -56,7 +55,7 @@ class assignsubmission_maharaws_observers {
         }
 
         // Get Mahara submission.
-        $maharasubmission = $DB->get_record('assignsubmission_maharaws', array('submission' => $submission->id));
+        $maharasubmission = $DB->get_record('assignsubmission_maharaws', ['submission' => $submission->id]);
 
         // Process further only if we are dealing with mahara submission that is locked.
         if ($maharasubmission && $maharasubmission->viewstatus == assign_submission_maharaws::STATUS_SUBMITTED) {
@@ -99,7 +98,7 @@ class assignsubmission_maharaws_observers {
         }
 
         // Get Mahara submission.
-        $maharasubmission = $DB->get_record('assignsubmission_maharaws', array('submission' => $submission->id));
+        $maharasubmission = $DB->get_record('assignsubmission_maharaws', ['submission' => $submission->id]);
 
         // Process further only if we are dealing with mahara submission that is locked.
         if ($maharasubmission && $maharasubmission->viewstatus == assign_submission_maharaws::STATUS_SUBMITTED) {
@@ -123,7 +122,7 @@ class assignsubmission_maharaws_observers {
         // Relese submitted page, but provide no outcomes.
         $maharasubmissionplugin->release_submitted_view(
             $maharasubmission->viewid,
-            array(),
+            [],
             $maharasubmission->iscollection
         );
 

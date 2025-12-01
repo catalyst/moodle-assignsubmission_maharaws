@@ -34,7 +34,6 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2013062401) {
-
         // If you're migrating from the Portland U version of the plugin, we can skip this part because
         // the table won't exist at all.
         if ($dbman->table_exists('assignsubmission_maharaws')) {
@@ -46,7 +45,6 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
             }
-
         }
 
         // Mahara savepoint reached.
@@ -54,12 +52,11 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
     }
 
     if ($oldversion < 2014071000) {
-
         // If you're upgrading from the Portland U version of the plugin, this table won't exist yet, so you don't need to add the
         // viewstatus column.
         if ($dbman->table_exists('assignsubmission_maharaws')) {
-            require_once($CFG->dirroot.'/mod/assign/submissionplugin.php');
-            require_once($CFG->dirroot.'/mod/assign/submission/maharaws/locallib.php');
+            require_once($CFG->dirroot . '/mod/assign/submissionplugin.php');
+            require_once($CFG->dirroot . '/mod/assign/submission/maharaws/locallib.php');
 
             // Define field viewstatus to be added to assignsubmission_maharaws.
             $table = new xmldb_table('assignsubmission_maharaws');
@@ -71,11 +68,11 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
             }
 
             $DB->execute("update {assignsubmission_maharaws}
-                             set viewstatus='".assign_submission_maharaws::STATUS_SELECTED."'
+                             set viewstatus='" . assign_submission_maharaws::STATUS_SELECTED . "'
                            where viewaccesskey is null");
 
             $DB->execute("update {assignsubmission_maharaws}
-                             set viewstatus='".assign_submission_maharaws::STATUS_SUBMITTED."'
+                             set viewstatus='" . assign_submission_maharaws::STATUS_SUBMITTED . "'
                            where viewaccesskey is not null");
 
             // Define field viewaccesskey to be dropped from assignsubmission_maharaws.
@@ -93,26 +90,25 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
     }
 
     if ($oldversion < 2014082000) {
-
         // Migrate from the Portland U version of the plugin.
         if (
                 !$dbman->table_exists('assignsubmission_maharaws')
                 && $dbman->table_exists('assign_mahara_submit_views')
                 && $dbman->table_exists('mahara_portfolio')
         ) {
-            require_once($CFG->dirroot.'/mod/assign/submissionplugin.php');
-            require_once($CFG->dirroot.'/mod/assign/submission/maharaws/locallib.php');
+            require_once($CFG->dirroot . '/mod/assign/submissionplugin.php');
+            require_once($CFG->dirroot . '/mod/assign/submission/maharaws/locallib.php');
 
             // Change config name.
             $DB->set_field(
-                    'assign_plugin_config',
-                    'name',
-                    'mnethostid',
-                    array(
+                'assign_plugin_config',
+                'name',
+                'mnethostid',
+                [
                             'plugin' => 'maharaws',
                             'subtype' => 'assignsubmission',
-                            'name' => 'mahara_host'
-                    )
+                            'name' => 'mahara_host',
+                    ]
             );
 
             // Define table assignsubmission_maharaws to be created.
@@ -129,15 +125,15 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
             $table->add_field('viewstatus', XMLDB_TYPE_CHAR, '20', null, null, null, null);
 
             // Adding keys to table assignsubmission_maharaws.
-            $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-            $table->add_key('assignment', XMLDB_KEY_FOREIGN, array('assignment'), 'assign', array('id'));
-            $table->add_key('submission', XMLDB_KEY_FOREIGN, array('submission'), 'assign_submission', array('id'));
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_key('assignment', XMLDB_KEY_FOREIGN, ['assignment'], 'assign', ['id']);
+            $table->add_key('submission', XMLDB_KEY_FOREIGN, ['submission'], 'assign_submission', ['id']);
             $dbman->create_table($table);
 
             // Migrate data from assign_mahara_submit_views && mahara_portfolio tables.
             $rs = $DB->get_recordset('assign_mahara_submit_views', null, 'id');
             foreach ($rs as $submissiondata) {
-                $page = $DB->get_record('mahara_portfolio', array('id' => $submissiondata->portfolio));
+                $page = $DB->get_record('mahara_portfolio', ['id' => $submissiondata->portfolio]);
                 $todb = new stdClass();
                 $todb->assignment = $submissiondata->assignment;
                 $todb->submission = $submissiondata->submission;
@@ -146,9 +142,11 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
                 $todb->viewtitle = $page->title;
                 $todb->iscollection = 0;
                 $status = $submissiondata->status;
-                if ($status == assign_submission_maharaws::STATUS_RELEASED ||
+                if (
+                    $status == assign_submission_maharaws::STATUS_RELEASED ||
                     $status == assign_submission_maharaws::STATUS_SELECTED ||
-                    $status == assign_submission_maharaws::STATUS_SUBMITTED) {
+                    $status == assign_submission_maharaws::STATUS_SUBMITTED
+                ) {
                     $todb->status = $status;
                 }
                 $todb->status = $submissiondata->status;
@@ -156,7 +154,6 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
             }
             $dbman->drop_table(new xmldb_table('assign_mahara_submit_views'));
             $dbman->drop_table(new xmldb_table('mahara_portfolio'));
-
         }
         // Mahara savepoint reached.
         upgrade_plugin_savepoint(true, 2014082000, 'assignsubmission', 'maharaws');
@@ -165,9 +162,9 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
     if ($oldversion < 2015021002) {
         // First of all, fetch assignments that have assignfeedback enabled.
         $sql = 'SELECT assignment FROM {assign_plugin_config} WHERE plugin = ? AND subtype = ? AND name = ? AND value = ?';
-        $records = $DB->get_recordset_sql($sql, array(
+        $records = $DB->get_recordset_sql($sql, [
                 $DB->sql_compare_text('maharaws'), $DB->sql_compare_text('assignfeedback'),
-                $DB->sql_compare_text('enabled'), $DB->sql_compare_text('1')));
+                $DB->sql_compare_text('enabled'), $DB->sql_compare_text('1')]);
         // Now update assignment settings, making unlocking enabled in assignment lock
         // setting for those where assignfeedback_mahara was enabled.
         foreach ($records as $record) {
@@ -177,7 +174,7 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
                            name = 'lock' AND
                            value = '1' AND
                            assignment = ?";
-            $DB->execute($sql, array($record->assignment));
+            $DB->execute($sql, [$record->assignment]);
         }
         upgrade_plugin_savepoint(true, 2015021002, 'assignsubmission', 'maharaws');
     }
@@ -189,12 +186,14 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
             $pluginman = core_plugin_manager::instance();
             $uninstallurl = $pluginman->get_uninstall_url('assignfeedback_mahara', 'overview');
             $uninstall = html_writer::link($uninstallurl, 'uninstall');
-            echo html_writer::div("It seems you are using assignfeedback_mahara plugin. "
+            echo html_writer::div(
+                "It seems you are using assignfeedback_mahara plugin. "
                     . "This plugin is no longer required for Mahara pages unlocking and conflicting "
                     . "with this upgrade. Please " . $uninstall . " assignfeedback_mahara "
                     . "plugin first, remove its installation directory, and then proceed "
                     . "with upgrading by navigating to \"Site adminstration\" > \"Notifications\".",
-                    'alert alert-error');
+                'alert alert-error'
+            );
             $result = false;
         }
 

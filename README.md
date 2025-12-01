@@ -27,8 +27,7 @@ Supported Branches
 
 | Moodle version    | Mahara version  | Branch  |
 | ----------------- | --------------- | ------- |
-| Moodle 4.1 - 4.5   | Mahara 24.04+   | MOODLE_401_STABLE  |
-
+| Moodle 4.5 - | Mahara 25.04         | MOODLE_405_STABLE |
 
 Install the Moodle plugin
 --------------------------------------------------

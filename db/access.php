@@ -25,13 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-    'assignsubmission/maharaws:configure' => array(
+$capabilities = [
+    'assignsubmission/maharaws:configure' => [
         'riskbitmask' => RISK_MANAGETRUST,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        )
-    ),
-);
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+];

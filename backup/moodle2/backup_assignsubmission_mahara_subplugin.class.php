@@ -32,7 +32,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_assignsubmission_maharaws_subplugin extends backup_subplugin {
-
     /**
      *
      * Returns the subplugin information to attach to submission element
@@ -46,7 +45,7 @@ class backup_assignsubmission_maharaws_subplugin extends backup_subplugin {
         $subpluginelement = new backup_nested_element(
             'submission_maharaws',
             null,
-            array('viewid', 'viewurl', 'viewtitle', 'submission', 'iscollection', 'viewstatus')
+            ['viewid', 'viewurl', 'viewtitle', 'submission', 'iscollection', 'viewstatus']
         );
 
         // Connect XML elements into the tree.
@@ -54,8 +53,7 @@ class backup_assignsubmission_maharaws_subplugin extends backup_subplugin {
         $subpluginwrapper->add_child($subpluginelement);
 
         // Set source to populate the data.
-        $subpluginelement->set_source_table('assignsubmission_maharaws', array('submission' => backup::VAR_PARENTID));
+        $subpluginelement->set_source_table('assignsubmission_maharaws', ['submission' => backup::VAR_PARENTID]);
         return $subplugin;
     }
-
 }

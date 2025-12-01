@@ -25,13 +25,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$observers = array(
-    array(
+$observers = [
+    [
         'eventname'   => '\mod_assign\event\submission_graded',
         'callback'    => 'assignsubmission_maharaws_observers::submission_graded',
-    ),
-    array(
+    ],
+    [
         'eventname'   => '\mod_assign\event\workflow_state_updated',
         'callback'    => 'assignsubmission_maharaws_observers::workflow_state_updated',
-    ),
-);
+    ],
+];

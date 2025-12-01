@@ -32,7 +32,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_assignsubmission_maharaws_subplugin extends restore_subplugin {
-
     /**
      *
      * Returns array the paths to be handled by the subplugin at assignment level
@@ -40,7 +39,7 @@ class restore_assignsubmission_maharaws_subplugin extends restore_subplugin {
      */
     protected function define_submission_subplugin_structure() {
 
-        $paths = array();
+        $paths = [];
 
         $elename = $this->get_namefor('submission');
         $elepath = $this->get_pathfor('/submission_maharaws');
@@ -65,5 +64,4 @@ class restore_assignsubmission_maharaws_subplugin extends restore_subplugin {
 
         $DB->insert_record('assignsubmission_maharaws', $data);
     }
-
 }

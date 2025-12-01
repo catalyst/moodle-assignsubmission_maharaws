@@ -34,7 +34,6 @@ namespace assignsubmission_maharaws\event;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class submission_created extends \mod_assign\event\submission_created {
-
     /**
      * Init method.
      */

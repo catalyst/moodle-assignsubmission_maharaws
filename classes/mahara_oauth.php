@@ -28,7 +28,7 @@
 namespace assignsubmission_maharaws;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/oauthlib.php');
+require_once($CFG->libdir . '/oauthlib.php');
 
 /**
  * This class mahara_oauth.
@@ -39,7 +39,6 @@ require_once($CFG->libdir.'/oauthlib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mahara_oauth extends \oauth_helper {
-
     /**
      * Request oauth protected resources
      *
@@ -49,16 +48,16 @@ class mahara_oauth extends \oauth_helper {
      * @param string   $token
      * @param string   $secret
      */
-    public function request($method, $url, $params=array(), $token='', $secret='') {
+    public function request($method, $url, $params = [], $token = '', $secret = '') {
         $token = '';
-        $this->sign_secret = $secret.'&'.$token;  // We never pass the token, only the secret.
+        $this->sign_secret = $secret . '&' . $token;  // We never pass the token, only the secret.
         if (strtolower($method) === 'post' && !empty($params)) {
-            $oauthparams = $this->prepare_oauth_parameters($url, array('oauth_token' => $token) + $params, $method);
+            $oauthparams = $this->prepare_oauth_parameters($url, ['oauth_token' => $token] + $params, $method);
         } else {
-            $oauthparams = $this->prepare_oauth_parameters($url, array('oauth_token' => $token), $method);
+            $oauthparams = $this->prepare_oauth_parameters($url, ['oauth_token' => $token], $method);
         }
         $this->setup_oauth_http_header($oauthparams);
-        $content = call_user_func_array(array($this->http, strtolower($method)), array($url, $params, $this->http_options));
+        $content = call_user_func_array([$this->http, strtolower($method)], [$url, $params, $this->http_options]);
 
         if ($this->http->info['http_code'] != 200) {
             throw new \moodle_exception('webservice call was not successful');

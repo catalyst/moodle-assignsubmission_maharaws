@@ -85,7 +85,7 @@ $settings->add(
 );
 
 $settings->add(
-    new admin_setting_configtext(
+    new admin_setting_configpasswordunmask(
         'assignsubmission_maharaws/secret',
         new lang_string('secret', 'assignsubmission_maharaws'),
         new lang_string('secret_help', 'assignsubmission_maharaws'),

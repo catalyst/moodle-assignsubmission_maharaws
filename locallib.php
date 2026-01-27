@@ -772,11 +772,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
         } else {
             $iscollection = ($data->viewid[0] == 'c');
             $data->viewid = substr($data->viewid, 1);
-        }
 
-        if ($viewdata = $this->get_view($data->viewid, $iscollection)) {
-            $url = $viewdata['url'];
-            $title = clean_text($viewdata['title']);
+            if ($viewdata = $this->get_view($data->viewid, $iscollection)) {
+                $url = $viewdata['url'];
+                $title = clean_text($viewdata['title']);
+            }
         }
 
         $maharasubmission = $this->get_mahara_submission($submission->id);

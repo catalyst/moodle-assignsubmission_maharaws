@@ -63,6 +63,7 @@ $string['mahara'] = 'Mahara';
 $string['maharaws:configure'] = 'Configure Mahara submission';
 $string['nomaharahostsfound'] = 'No Mahara hosts found.';
 $string['noneselected'] = 'None selected';
+$string['notyoursubmission'] = 'You cannot edit another person\'s portfolio submission.';
 $string['noviewscreated'] = 'You have no available pages or collections. Please visit "{$a->name}" and <a href="{$a->jumpurl}" target="_blank" rel="noopener noreferrer">create a new one</a>.';
 $string['option_collections'] = 'Collections';
 $string['option_views'] = 'Pages';

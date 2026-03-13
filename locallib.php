@@ -237,7 +237,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         $this->set_config('debug', false);
         $this->set_config('remoteuser', false);
-        $this->set_config('username_attribute', 'email');
+        $usernameattribute = $this->get_config('username_attribute');
+        if ($usernameattribute === false || $usernameattribute === '') {
+            $usernameattribute = $this->get_default_username_attribute();
+        }
+        $this->set_config('username_attribute', $usernameattribute);
         $this->set_config('archiveonrelease', $data->assignsubmission_maharaws_archiveonrelease);
 
         // Test Mahara connection.
@@ -1389,6 +1393,22 @@ class assign_submission_maharaws extends assign_submission_plugin {
              'studentid' :
         // Else the same attribute name in Mahara.
              $this->get_config('username_attribute')));
+    }
+
+    /**
+     * Helper function to get the default username attribute from site config.
+     *
+     * @return string
+     */
+    private function get_default_username_attribute() {
+        $usernameattribute = get_config('assignsubmission_maharaws', 'username_attribute');
+        $allowedattributes = ['email', 'username', 'idnumber'];
+
+        if (!in_array($usernameattribute, $allowedattributes, true)) {
+            return 'email';
+        }
+
+        return $usernameattribute;
     }
 
     /**

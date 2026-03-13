@@ -37,6 +37,20 @@ $settings->add(
 
 $settings->add(
     new admin_setting_configselect(
+        'assignsubmission_maharaws/username_attribute',
+        new lang_string('defaultusernameattribute', 'assignsubmission_maharaws'),
+        new lang_string('defaultusernameattribute_help', 'assignsubmission_maharaws'),
+        'email',
+        [
+            'email' => new lang_string('usernameattribute:email', 'assignsubmission_maharaws'),
+            'username' => new lang_string('usernameattribute:username', 'assignsubmission_maharaws'),
+            'idnumber' => new lang_string('usernameattribute:idnumber', 'assignsubmission_maharaws'),
+        ]
+    )
+);
+
+$settings->add(
+    new admin_setting_configselect(
         'assignsubmission_maharaws/lock',
         new lang_string(
             'defaultlockpages',

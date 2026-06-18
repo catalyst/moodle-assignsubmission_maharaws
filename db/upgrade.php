@@ -217,7 +217,7 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        $key = new xmldb_key('maharawsgroup', XMLDB_KEY_FOREIGN, ['groupid'], 'assignsubmission_maharawsgroup', ['id']);
+        $key = new xmldb_key('group', XMLDB_KEY_FOREIGN, ['groupid'], 'groups', ['id']);
         // Conditionally launch add key.
         if (!$dbman->find_key_name($table, $key)) {
             $dbman->add_key($table, $key);

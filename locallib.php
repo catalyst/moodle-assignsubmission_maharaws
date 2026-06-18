@@ -958,7 +958,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 $maharasubmission->iscollection = (int) $iscollection;
                 $maharasubmission->viewstatus = self::STATUS_SELECTED;
                 if ($group) {
-                    $maharasubmission->groupid = $group->id;
+                    $maharasubmission->groupid = $group->moodlegroup;
                 }
                 return $DB->update_record('assignsubmission_maharaws', $maharasubmission);
             } else {
@@ -969,7 +969,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 $maharasubmission->iscollection = (int) $iscollection;
                 $maharasubmission->viewstatus = self::STATUS_SELECTED;
                 if ($group) {
-                    $maharasubmission->groupid = $group->id;
+                    $maharasubmission->groupid = $group->moodlegroup;
                 }
                 $maharasubmission->submission = $submission->id;
                 $maharasubmission->assignment = $this->assignment->get_instance()->id;
@@ -1070,7 +1070,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 $maharasubmission->viewstatus = $status;
                 $maharasubmission->iscollection = (int) $iscollection;
                 if ($group) {
-                    $maharasubmission->groupid = $group->id;
+                    $maharasubmission->groupid = $group->moodlegroup;
                 }
                 $params['objectid'] = $maharasubmission->id;
                 $updatestatus = $DB->update_record('assignsubmission_maharaws', $maharasubmission);
@@ -1094,7 +1094,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
                     $maharasubmission->viewstatus = $status;
                     if ($group) {
-                        $maharasubmission->groupid = $group->id;
+                        $maharasubmission->groupid = $group->moodlegroup;
                     }
                     $maharasubmission->iscollection = (int) $iscollection;
 

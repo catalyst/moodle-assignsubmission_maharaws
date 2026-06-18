@@ -177,7 +177,29 @@ class assignsubmission_maharaws_observers {
             }
 
             $assignment = helper::get_assignment_for_ws($data['courseid'], $data['objectid']);
-            $config = helper::get_ws_config($assignment, $maharagroup);
+
+            if (!$assignment) {
+                // If the assignment has already been deleted we can't retrieve the connection
+                // settings needed to update Mahara. The user will need to manage the Mahara
+                // group manually in this case.
+                \core\notification::add(
+                    get_string(
+                        'groups:noassignmentfound',
+                        'assignsubmission_maharaws',
+                        preg_replace(
+                            '/[^a-z0-9]/',
+                            '',
+                            strtolower(
+                                get_string('groups:groupdesc', 'assignsubmission_maharaws') . $data['objectid']
+                            )
+                        )
+                    ),
+                    \core\output\notification::NOTIFY_WARNING
+                );
+                return;
+            }
+
+            $config = helper::get_ws_config($assignment);
             $params = [
                 'groups' => [[
                     'id' => $maharagroup->maharagroup,

@@ -86,7 +86,7 @@ class sync_member extends \core\task\adhoc_task {
      */
     public static function member_sync(stdClass $maharagroup, string $username, stdClass $customdata): string {
         $assignment = helper::get_assignment_for_ws($customdata->courseid, $customdata->groupid);
-        $config = helper::get_ws_config($assignment, $maharagroup);
+        $config = helper::get_ws_config($assignment);
         $result = self::check_mahara_user_exists($username, $customdata->action, $config);
         $errormessage = '';
 

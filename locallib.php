@@ -473,7 +473,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 );
                 return false;
             } else {
-                $maharagroup = helper::get_mahara_group($count[0]);
+                $maharagroup = helper::get_mahara_group(reset($count));
             }
         }
 
@@ -581,7 +581,6 @@ class assign_submission_maharaws extends assign_submission_plugin {
             debugging("Remote host webservice call failed: " . $e->getCode() . ":" . $e->getMessage());
             throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());
         }
-
 
         $remotehost->jumpurl = new moodle_url(
             '/mod/assign/submission/maharaws/launch.php',
@@ -1367,7 +1366,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
                 $parsed = parse_url($viewurl);
                 parse_str($parsed['query'] ?? '', $queryparams);
                 if (empty($queryparams['id']) && !empty($maharasubmission->viewid)) {
-                    // Clean URL - reconstruct an ID-based absolute URL
+                    // Clean URL - reconstruct an ID-based absolute URL.
                     $base = $parsed['scheme'] . '://' . $parsed['host']
                         . (isset($parsed['port']) ? ':' . $parsed['port'] : '');
                     $viewurl = $base . '/view/view.php?id=' . (int)$maharasubmission->viewid;

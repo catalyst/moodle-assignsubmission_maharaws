@@ -208,7 +208,7 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021081800, 'assignsubmission', 'maharaws');
     }
 
-    if ($oldversion < 2026020300) {
+    if ($oldversion < 2026020202) {
         // Define field groupid to be added to assignsubmission_maharaws.
         $table = new xmldb_table('assignsubmission_maharaws');
         $field = new xmldb_field('groupid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'viewstatus');
@@ -242,7 +242,7 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
         }
 
         // Maharaws savepoint reached.
-        upgrade_plugin_savepoint(true, 2026020300, 'assignsubmission', 'maharaws');
+        upgrade_plugin_savepoint(true, 2026020202, 'assignsubmission', 'maharaws');
     }
 
     return true;

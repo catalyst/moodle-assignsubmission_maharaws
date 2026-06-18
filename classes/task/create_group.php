@@ -60,7 +60,7 @@ class create_group extends \core\task\adhoc_task {
             if ($maharagroup && $maharagroup->maharagroup == 0) {
                 $course = get_course($group->courseid);
                 $assignment = helper::get_assignment_for_ws($course->id, $group->id);
-                $config = helper::get_ws_config($assignment, $maharagroup);
+                $config = helper::get_ws_config($assignment);
                 $errormessage = '';
 
                 try {

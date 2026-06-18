@@ -60,6 +60,12 @@ class hook_callbacks {
                     $params
                 );
 
+                // Filter out false positives from the LIKE match.
+                $tasks = array_filter($tasks, function ($task) use ($courseid) {
+                    $data = json_decode($task->customdata);
+                    return isset($data->courseid) && $data->courseid == $courseid;
+                });
+
                 // Count pending/failed tasks.
                 if (count($tasks) > 0) {
                     $pending = 0;

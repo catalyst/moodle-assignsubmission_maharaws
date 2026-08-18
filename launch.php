@@ -28,12 +28,10 @@ require_once($CFG->dirroot . '/mod/lti/lib.php');
 require_once($CFG->dirroot . '/mod/lti/locallib.php');
 require_once($CFG->dirroot . '/mod/assign/locallib.php');
 
-confirm_sesskey();
-
 $id = required_param('id', PARAM_INT); // Assignment id.
 $target = required_param('url', PARAM_URL); // Mahara view launch.
 
- [$course, $cm] = get_course_and_cm_from_cmid($id, 'assign');
+[$course, $cm] = get_course_and_cm_from_cmid($id, 'assign');
 
 require_login($course, true, $cm);
 

@@ -481,8 +481,10 @@ class assign_submission_maharaws extends assign_submission_plugin {
             throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());
         }
 
-        $remotehost->jumpurl = $CFG->wwwroot . '/mod/assign/submission/maharaws/launch.php?id='
-            . $PAGE->cm->id . '&url=' . urlencode($remotehost->siteurl) . '&sesskey=' . sesskey();
+        $remotehost->jumpurl = new moodle_url(
+            '/mod/assign/submission/maharaws/launch.php',
+            ['id' => $PAGE->cm->id, 'url' => urlencode($remotehost->siteurl)],
+        );
         $remotehost->name = $remotehost->sitename;
 
         // See if any of views are already in use, we will remove them from select.
@@ -1158,7 +1160,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         $url = new moodle_url(
             '/mod/assign/submission/maharaws/launch.php',
-            ['url' => $url, 'id' => $cm->id, 'sesskey' => sesskey()]
+            ['id' => $cm->id, 'url' => $url]
         );
 
         $popupicon = html_writer::link($url->out(false), $icon, $params + [

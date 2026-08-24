@@ -34,4 +34,20 @@ $observers = [
         'eventname'   => '\mod_assign\event\workflow_state_updated',
         'callback'    => 'assignsubmission_maharaws_observers::workflow_state_updated',
     ],
+    [
+        'eventname'   => '\core\event\group_updated',
+        'callback'    => 'assignsubmission_maharaws_observers::mahara_group_update',
+    ],
+    [
+        'eventname'   => '\core\event\group_deleted',
+        'callback'    => 'assignsubmission_maharaws_observers::mahara_group_delete',
+    ],
+    [
+        'eventname'   => '\core\event\group_member_added',
+        'callback'    => 'assignsubmission_maharaws_observers::mahara_group_update_member',
+    ],
+    [
+        'eventname'   => '\core\event\group_member_removed',
+        'callback'    => 'assignsubmission_maharaws_observers::mahara_group_update_member',
+    ],
 ];

@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use assignsubmission_maharaws\helper;
+
 require("../../../../config.php");
 
 require_once($CFG->dirroot . '/mod/lti/lib.php');

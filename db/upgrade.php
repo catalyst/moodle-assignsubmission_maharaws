@@ -208,5 +208,42 @@ function xmldb_assignsubmission_maharaws_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021081800, 'assignsubmission', 'maharaws');
     }
 
+    if ($oldversion < 2026020202) {
+        // Define field groupid to be added to assignsubmission_maharaws.
+        $table = new xmldb_table('assignsubmission_maharaws');
+        $field = new xmldb_field('groupid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'viewstatus');
+
+        // Conditionally launch add field.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $key = new xmldb_key('group', XMLDB_KEY_FOREIGN, ['groupid'], 'groups', ['id']);
+        // Conditionally launch add key.
+        if (!$dbman->find_key_name($table, $key)) {
+            $dbman->add_key($table, $key);
+        }
+
+        // Define table assignsubmission_maharawsgroup to be created.
+        $table = new xmldb_table('assignsubmission_maharawsgroup');
+
+        // Add fields.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('moodlegroup', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'id');
+        $table->add_field('maharagroup', XMLDB_TYPE_INTEGER, '10', null, null, null, 0, 'moodlegroup');
+        $table->add_field('institution', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null, 'maharagroup');
+
+        // Add keys.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('moodlegroup', XMLDB_KEY_FOREIGN, ['moodlegroup'], 'groups', ['id']);
+
+        // Create table.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Maharaws savepoint reached.
+        upgrade_plugin_savepoint(true, 2026020202, 'assignsubmission', 'maharaws');
+    }
+
     return true;
 }

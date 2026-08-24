@@ -36,7 +36,7 @@ use mod_assign\privacy\assign_plugin_request_data;
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider implements \mod_assign\privacy\assignsubmission_provider, metadataprovider {
+class provider implements metadataprovider, \mod_assign\privacy\assignsubmission_provider {
     /**
      * Return the fields which contain personal data.
      *

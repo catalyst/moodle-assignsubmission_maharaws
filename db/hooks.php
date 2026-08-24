@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the version information for Mahara submission plugin
+ * Hook callbacks for assignsubmission_maharaws.
  *
- * @package    assignsubmission_maharaws
- * @copyright  2020 Catalyst IT
- * @copyright  2012 Lancaster University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     assignsubmission_maharaws
+ * @author      2025 Sarah Cotton <sarah.cotton@catalyst-au.net>
+ * @copyright   Catalyst IT, 2025
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-
-$plugin->version   = 2026020202;
-$plugin->release   = 2026020202;
-$plugin->requires  = 2024100700; // Requires 4.5 or higher.
-$plugin->component = 'assignsubmission_maharaws';
-$plugin->supported = [405, 501];
-$plugin->maturity  = MATURITY_STABLE;
+$callbacks = [
+    [
+        'hook' => \core\hook\output\after_http_headers::class,
+        'callback' => \assignsubmission_maharaws\hook_callbacks::class . '::after_http_headers',
+        'priority' => 0,
+    ],
+];

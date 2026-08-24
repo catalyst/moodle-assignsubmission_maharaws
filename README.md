@@ -144,7 +144,42 @@ If the locking setting permits 'Unlock after grading':
 
 If you need help, try the [Moodle-Mahara Integration forum](https://mahara.org/interaction/forum/view.php?id=30)
 
-Submitting of group portfolios is not yet supported.
+Submitting of group portfolios
+---------------------------------
+When group submissions are enabled in the standard Moodle assignment settings, group portfolios can be submitted from Mahara to Moodle.
+
+At site level, the institution short name for the global web service should be set. If global config is not set, the institution will be configured
+by the web service itself and displayed for information only in the assignment settings.
+
+With group submissions enabled, a groups selector will appear underneath the other Mahara configuration options in the assignment settings.
+If global config is enabled, the groups selector will be available when adding a new assignment, otherwise the selector
+will be available after the assignment has been initially created.
+
+The groups available for selection will be any that haven't already been mapped to a Mahara group or those that are already linked to the currently configured
+Mahara web service institution.
+
+Because there is the potential for different assignments to be linked to different institutions in one course, once groups
+have been selected for an assignment, the web service configuration cannot be changed (unless all the groups are subsequently de-selected first).
+
+When a group (or groups) is selected in an assignment, an adhoc task 'Create group' is created when the assignment settings
+are saved. A web service creates the group in Mahara and syncs all the group members at the same time; this is the only way a Moodle assignment group can be created in Mahara. When a group is created in
+Mahara, it will be placed into a category called 'Moodle managed groups'; to change the name of this category, update the string 'groups:category' in the Moodle plugin.
+
+Mahara group membership is also managed via Moodle. When a group name is changed or group members are added or removed, an adhoc task 'Sync member' is created. A web service will sync the
+changes to Mahara. If a group is deleted in Moodle, the mapping is removed from Moodle, but the group in Mahara is not deleted as we don't want to lose
+student work. The group name in Mahara will be updated to include the text 'deleted from Moodle'. Moodle assignment groups cannot be updated manually in Mahara.
+
+Whenever a group is created or group membership is changed for a Mahara mapped group, an account will be created for a person if one doesn't already exist.
+
+Students can only be a member of one of the groups that have been mapped in an assignment. This is to avoid the possibility of a student accidentally
+submitting work from the wrong Mahara group as this would give the other group members access to a portfolio they shouldn't be able to view.
+
+When submitting a group portfolio, students will only be able to select group portfolios from the group they are a member of, for the assignment they are submitting to.
+Individual portfolios are not available for selection in group assignments.
+
+Archiving of portfolios is not currently available for group submissions but otherwise all other functionality works the same as for individual submissions.
+
+**Development of groups functionality was funded by Dublin City University (DCU), Ireland, through its DCU Futures initiative.**
 
 Convert MNet submissions
 ------------------------
@@ -174,11 +209,12 @@ Credits
 
 This web services plugin is based on the [original one created for the connection via MNet](https://github.com/MaharaProject/moodle-assignsubmission_mahara).
 
-The upgrade of the plugin to support web services has been done thanks to funding from
+The following organisations provided funding for plugin updates:
 
 * Waitematā District Health Board
 * Monash University
 * Catalyst IT
+* Dublin City University (DCU)
 
 License
 -------

@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2026020202;
 $plugin->release   = 2026020202;
-$plugin->requires  = 2024100700; // Requires 4.5 or higher.
+$plugin->requires  = 2022110800; // Low value to allow support for Totara on this branch.
 $plugin->component = 'assignsubmission_maharaws';
 $plugin->supported = [405, 501];
 $plugin->maturity  = MATURITY_STABLE;

@@ -576,7 +576,7 @@ class assign_submission_maharaws extends assign_submission_plugin {
 
         // Prepare the header.
         try {
-            $remotehost = \assignsubmission_maharaws\webservice::call("mahara_user_get_extended_context", [], $config);
+            $remotehost = (object) \assignsubmission_maharaws\webservice::call("mahara_user_get_extended_context", [], $config);
         } catch (Exception $e) {
             debugging("Remote host webservice call failed: " . $e->getCode() . ":" . $e->getMessage());
             throw new moodle_exception('errorwsrequest', 'assignsubmission_maharaws', '', $e->getMessage());

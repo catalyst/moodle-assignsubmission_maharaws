@@ -928,22 +928,28 @@ class assign_submission_maharaws extends assign_submission_plugin {
         // start with "v" or "c" to indicate the type, e.g. v30, c100.
         if ($data->viewid == 'none') {
             $iscollection = false;
-            $data->viewid = null;
+            // $data->viewid = null;
         } else {
-            $iscollection = ($data->viewid[0] == 'c');
-            $data->viewid = substr($data->viewid, 1);
+            if (isset($data->viewid)) {
+                $iscollection = ($data->viewid[0] == 'c');
+                $data->viewid = substr($data->viewid, 1);
 
-            if ($viewdata = $this->get_view($data->viewid, $iscollection, $group)) {
-                $url = $viewdata['url'];
-                $title = clean_text($viewdata['title']);
+                if ($viewdata = $this->get_view($data->viewid, $iscollection, $group)) {
+                    $url = $viewdata['url'];
+                    $title = clean_text($viewdata['title']);
+                }
+            } else {
+                // No mahara page or collection is selected.
+                $data->viewid = '';
             }
         }
 
         $maharasubmission = $this->get_mahara_submission($submission->id);
         if ($submission->status === ASSIGN_SUBMISSION_STATUS_DRAFT) {
             // Draft. All we need to do is just save or update submitted view data.
-            if ($data->viewid === null) {
+            if ($data->viewid === 'none') {
                 // They selected "(nothing selected)", so remove their Mahara selection.
+                // None removes previously submitted mahara submissions.
                 return $DB->delete_records(
                     'assignsubmission_maharaws',
                     ['submission' => $submission->id]
@@ -977,8 +983,8 @@ class assign_submission_maharaws extends assign_submission_plugin {
         } else {
             // This is not the draft, but the actual submission. Process it properly.
 
-            // If viewid is null, it means they selected no page.
-            if ($data->viewid === null) {
+            // If viewid is none, it means they selected no page but selected none so we have to remove previous maharasubmissions.
+            if ($data->viewid === 'none') {
                 if ($maharasubmission) {
                     // Unlock the previously selected page.
                     if ($maharasubmission->viewstatus == self::STATUS_SUBMITTED) {
@@ -997,6 +1003,11 @@ class assign_submission_maharaws extends assign_submission_plugin {
                     // No previously selected page to clear.
                     return true;
                 }
+            }
+            // If $data->viewid is empty string, then nothing was selected.
+            // We do not have to clear reviously selected page.
+            if ($data->viewid === '') {
+                return true;
             }
 
             // If we're not locking user pages, we are not submitting the view, not creating copy.
